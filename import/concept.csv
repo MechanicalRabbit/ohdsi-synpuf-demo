@@ -24,3 +24,4 @@ concept_id,concept_name,domain_id,vocabulary_id,concept_class_id,standard_concep
 44819247,OMOP Concept Class,Metadata,Concept Class,Concept Class,,OMOP generated,1970-01-01,2099-12-31,
 44819274,OMOP Relationship,Metadata,Concept Class,Concept Class,,OMOP generated,1970-01-01,2099-12-31,
 44819279,OMOP Vocabulary,Metadata,Concept Class,Concept Class,,OMOP generated,1970-01-01,2099-12-31,
+45768449,Hypertensive crisis,Condition,SNOMED,Clinical Finding,S,706882009,2015-01-31,2099-12-31,
