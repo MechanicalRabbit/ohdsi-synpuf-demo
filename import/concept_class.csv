@@ -1,4 +1,6 @@
 concept_class_id,concept_class_name,concept_class_concept_id
+Clinical Finding,Clinical Finding,44818997
 Concept Class,OMOP Concept Class,44819247
 Domain,Domain,44819025
+Relationship,OMOP Relationship,44819274
 Vocabulary,OMOP Vocabulary,44819279

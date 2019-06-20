@@ -1,0 +1,3 @@
+relationship_id,relationship_name,is_hierarchical,defines_ancestry,reverse_relationship_id,relationship_concept_id
+Is a,Is a,1,0,Subsumes,44818821
+Subsumes,Subsumes,1,1,Is a,44818723
