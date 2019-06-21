@@ -1,0 +1,23 @@
+Characterization #32 / [BookOfOHDSI] Characterization of hypertension treatments
+
+Cohort Definitions:
+1770675	[BookOfOHDSI] New users of ACE inhibitors as first-line monotherapy for hypertension
+1770676	[BookOfOHDSI] New users of Thiazide-like diuretics as first-line monotherapy for hypertension
+
+Feature Analysis
+5	Drug Group Era Long Term	One covariate per drug rolled up to ATC groups in the drug_era table overlapping with any part of the long term window.	Remove
+30	Condition Group Era Long Term	One covariate per condition era rolled up to groups in the condition_era table overlapping with any part of the long term window.	Remove
+68	Demographics Index Month	Month of the index date.	Remove
+71	Demographics Age Group	Age of the subject on the index date (in 5 year age groups)	Remove
+73	Demographics Prior Observation Time	Number of continuous days of observation time preceding the index date.	Remove
+74	Demographics Gender	Gender of the subject.	Remove
+77	Demographics Age	Age of the subject on the index date (in years).	Remove
+79	Demographics Time In Cohort	Number of days of observation time during cohort period.	Remove
+80	Demographics Index Year	Year of the index date.	Remove
+81	Demographics Post Observation Time	Number of continuous days of observation time following the index date.
+
+SubGroup Analysis
+
+Male Only
+Female Only
+

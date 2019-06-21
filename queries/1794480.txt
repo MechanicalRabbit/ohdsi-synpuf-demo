@@ -1,0 +1,16 @@
+[OHDSI EU 2019] Excluded concepts of ACE inhibitors or Thiazide diuretics
+	Concept Id	Concept Code	Concept Name	Domain	Standard Concept Caption	Exclude 	Descendants 	Mapped
+	1342439	38454	trandolapril	Drug	Standard			
+	1334456	35296	Ramipril	Drug	Standard			
+	1331235	35208	quinapril	Drug	Standard			
+	1373225	54552	Perindopril	Drug	Standard			
+	1310756	30131	moexipril	Drug	Standard			
+	907013	6916	Metolazone	Drug	Standard			
+	1308216	29046	Lisinopril	Drug	Standard			
+	978555	5764	Indapamide	Drug	Standard			
+	974166	5487	Hydrochlorothiazide	Drug	Standard			
+	1363749	50166	Fosinopril	Drug	Standard			
+	1341927	3827	Enalapril	Drug	Standard			
+	1395058	2409	Chlorthalidone	Drug	Standard			
+	1340128	1998	Captopril	Drug	Standard			
+	1335471	18867	benazepril	Drug	Standard			

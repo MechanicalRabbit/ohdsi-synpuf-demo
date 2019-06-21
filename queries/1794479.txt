@@ -1,0 +1,80 @@
+[OHDSI EU 2019] Negative controls
+
+	Concept Id	Concept Code	Concept Name	Domain	Standard Concept Caption	Exclude 	Descendants 	Mapped
+	72748	74779009	Strain of rotator cuff capsule	Condition	Standard			
+	73241	197210001	Anal and rectal polyp	Condition	Standard			
+	73560	55260003	Calcaneal spur	Condition	Standard			
+	75911	65358001	Acquired hallux valgus	Condition	Standard			
+	76786	63643000	Derangement of knee	Condition	Standard			
+	77965	1539003	Acquired trigger finger	Condition	Standard			
+	78619	22878006	Contusion of knee	Condition	Standard			
+	81151	44465007	Sprain of ankle	Condition	Standard			
+	81378	36071006	Chondromalacia of patella	Condition	Standard			
+	81634	248804005	Ptotic breast	Condition	Standard			
+	133655	80827001	Burn of forearm	Condition	Standard			
+	134438	40275004	Contact dermatitis	Condition	Standard			
+	136368	36241006	Non-toxic multinodular goiter	Condition	Standard			
+	137951	400166009	Acquired keratoderma	Condition	Standard			
+	139099	400097005	Ingrowing nail	Condition	Standard			
+	140641	57019003	Verruca vulgaris	Condition	Standard			
+	140648	402134005	Onychomycosis due to dermatophyte	Condition	Standard			
+	140842	274672009	Changes in skin texture	Condition	Standard			
+	141932	398838000	Senile hyperkeratosis	Condition	Standard			
+	194083	198212006	Vaginitis and vulvovaginitis	Condition	Non-Standard			
+	195873	237101004	Leukorrhea	Condition	Standard			
+	196168	80182007	Irregular periods	Condition	Standard			
+	199192	78794000	Abrasion and/or friction burn of trunk without infection	Condition	Standard			
+	201606	34000006	Crohn's disease	Condition	Standard			
+	259995	211616004	Foreign body in orifice	Condition	Standard			
+	373478	41256004	Presbyopia	Condition	Standard			
+	374375	18070006	Impacted cerumen	Condition	Standard			
+	376707	53726008	Acute conjunctivitis	Condition	Standard			
+	377572	19653005	Noise effects on inner ear	Condition	Standard			
+	378427	46152009	Tear film insufficiency	Condition	Standard			
+	380706	68905002	Regular astigmatism	Condition	Standard			
+	432303	78267003	Cocaine abuse	Condition	Standard			
+	432593	58262005	Kwashiorkor	Condition	Standard			
+	433111	212966005	Effects of hunger	Condition	Standard			
+	433527	129103003	Endometriosis	Condition	Standard			
+	433577	122481008	Hammer toe	Condition	Standard			
+	434165	309081009	Abnormal cervical smear	Condition	Standard			
+	434203	80350001	Late effect of contusion	Condition	Standard			
+	434327	37344009	Cannabis abuse	Condition	Standard			
+	436409	274093008	Abnormal pupil	Condition	Standard			
+	437264	89765005	Tobacco dependence syndrome	Condition	Standard			
+	438130	5602001	Opioid abuse	Condition	Standard			
+	438329	218247007	Late effect of motor vehicle accident	Condition	Standard			
+	439790	8971008	Psychalgia	Condition	Standard			
+	440193	59349003	Wristdrop	Condition	Standard			
+	440329	111859007	Herpes zoster without complication	Condition	Standard			
+	441788	240532009	Human papilloma virus infection	Condition	Standard			
+	443172	211015001	Splinter of face, without major open wound	Condition	Standard			
+	444132	125601008	Injury of knee	Condition	Standard			
+	4012570	102947004	High risk sexual behavior	Condition	Standard			
+	4012934	11282001	Homocystinuria	Condition	Standard			
+	4083487	247154004	Macular drusen	Condition	Standard			
+	4088290	248802009	Absence of breast	Condition	Standard			
+	4091513	249504006	Passing flatus	Condition	Standard			
+	4092879	249582007	Absent kidney	Condition	Standard			
+	4092896	249625002	Feces contents abnormal	Condition	Standard			
+	4103640	299653001	Amputated foot	Condition	Standard			
+	4103703	2901004	Melena	Condition	Standard			
+	4115367	202482009	Wrist joint pain	Condition	Standard			
+	4115402	301345002	Difficulty sleeping	Condition	Standard			
+	4166231	47708004	Genetic predisposition	Condition	Standard			
+	4170770	419893006	Epidermoid cyst	Condition	Standard			
+	4201390	302112009	Colostomy present	Condition	Standard			
+	4201717	302111002	Ileostomy present	Condition	Standard			
+	4202045	51771007	Postviral fatigue syndrome	Condition	Standard			
+	4209423	56294008	Nicotine dependence	Condition	Standard			
+	4213540	417347005	Cervical somatic dysfunction	Condition	Standard			
+	4231770	439698008	Hereditary thrombophilia	Condition	Standard			
+	4344500	239960007	Impingement syndrome of shoulder region	Condition	Standard			
+	36713918	718929000	Somatic dysfunction of lumbar region	Condition	Standard			
+	40480893	441846005	Nonspecific tuberculin test reaction	Condition	Standard			
+	40481632	445008009	Ganglion cyst	Condition	Standard			
+	44783954	698065002	Acid reflux	Condition	Standard			
+	45757370	123581000119101	Disproportion of reconstructed breast	Condition	Standard			
+	46269889	1085911000119103	Complication due to Crohn's disease	Condition	Standard			
+	46286594	987891000000105	Problem related to lifestyle	Condition	Standard			
+

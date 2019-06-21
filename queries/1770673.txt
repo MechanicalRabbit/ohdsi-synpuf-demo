@@ -1,0 +1,42 @@
+
+[BookOfOHDSI] Angioedema events
+Initial Event Cohort
+People having any of the following:
+
+    a condition occurrence of Angioedema1
+
+with continuous observation of at least 0 days prior and 0 days after event index date, and limit initial events to: all events per person.
+
+For people matching the Primary Events, include:
+Having all of the following criteria:
+
+    at least 1 occurrences of a visit occurrence of Inpatient or ER visit2
+    where event starts between all days Before and 0 days After index start date and event ends between 0 days Before and all days After index start date
+
+Limit cohort of initial events to: all events per person.
+Limit qualifying cohort to: all events per person.
+End Date Strategy
+Date Offset Exit Criteria
+This cohort defintion end date will be the index event's start date plus 7 days
+Cohort Collapse Strategy:
+Collapse cohort by era with a gap size of 30 days.
+Appendix 1: Concept Set Definitions
+
+1. Angioedema
+Show entries
+Search:
+Concept Id	Concept Name	Domain	Vocabulary	Excluded	Descendants	Mapped
+432791	Angioedema	Condition	SNOMED	NO	YES	NO
+Showing 1 to 1 of 1 entries
+Previous1Next
+
+2. Inpatient or ER visit
+Show entries
+Search:
+Concept Id	Concept Name	Domain	Vocabulary	Excluded	Descendants	Mapped
+262	Emergency Room and Inpatient Visit	Visit	Visit	NO	YES	NO
+9201	Inpatient Visit	Visit	Visit	NO	YES	NO
+9203	Emergency Room Visit	Visit	Visit	NO	YES	NO
+Showing 1 to 3 of 3 entries
+Previous1Next
+

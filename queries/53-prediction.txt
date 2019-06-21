@@ -1,0 +1,24 @@
+Book of OHDSI - Cleveland F2F
+
+Target Cohorts: [BookOfOHDSI] New users of ACE inhibitors as first-line monotherapy for hypertension
+
+Outcome Chorts: [BookOfOHDSI] Angioedema events
+
+Analysis:
+
+LassoLogisticRegressionSettings	{"variance":0.01,"seed":null}
+GradientBoostingMachineSettings	{"ntrees":[10,100],"nthread":20,"maxDepth":[4,6,17],"minRows":[20],"learnRate":[0.01,0.1],"seed":null}
+
+Covarients Settings:
+ATLAS: Prediction
+
+Remove	Temporal	Options
+	No	DemographicsGender, DemographicsAgeGroup, DemographicsRace, DemographicsEthnicity, DemographicsIndexMonth, ConditionGroupEraLongTerm  (+17 more covariate settingsConditionGroupEraShortTermDrugGroupEraLongTermDrugGroupEraShortTermDrugGroupEraOverlappingProcedureOccurrenceLongTermProcedureOccurrenceShortTermDeviceExposureLongTermDeviceExposureShortTermMeasurementLongTermMeasurementShortTermMeasurementRangeGroupLongTermObservationLongTermObservationShortTermCharlsonIndexDcsiChads2Chads2Vasc)
+
+Populaion:
+ATLAS: Prediction
+
+Remove	Binary	First Exposure Only	Risk Window Start	Risk Window End	Washout Period	Include All Outcomes	Remove Subjects With Prior Outcome	Prior Outcome Lookback	Require Time At Risk	Minimum Time At Risk
+	true	false	1d fromcohort start date	365d fromcohort start date	365d	true	false	99999d	true	364d
+
+

@@ -1,0 +1,84 @@
+
+[BookOfOHDSI] New users of ACE inhibitors as first-line monotherapy for hypertension
+Initial Event Cohort
+People having any of the following:
+
+    a drug exposure of ACE inhibitors1
+        for the first time in the person's history
+
+with continuous observation of at least 365 days prior and 0 days after event index date, and limit initial events to: earliest event per person.
+
+Inclusion Rules
+Inclusion Criteria #1: has hypertension diagnosis in 1 yr prior to treatment
+Having all of the following criteria:
+
+    at least 1 occurrences of a condition occurrence of Hypertensive disorder3
+    where event starts between 365 days Before and 0 days After index start date
+
+Inclusion Criteria #2: Has no prior antihypertensive drug exposures in medical history
+Having all of the following criteria:
+
+    exactly 0 occurrences of a drug exposure of Hypertension drugs2
+    where event starts between all days Before and 1 days Before index start date
+
+Inclusion Criteria #3: Is only taking ACE as monotherapy, with no concomitant combination treatments
+Having all of the following criteria:
+
+    exactly 1 distinct occurrences of a drug era of Hypertension drugs2
+    where event starts between 0 days Before and 7 days After index start date
+
+Limit qualifying cohort to: earliest event per person.
+End Date Strategy
+Custom Drug Era Exit Criteria
+This strategy creates a drug era from the codes found in the specified concept set. If the index event is found within an era, the cohort end date will use the era's end date. Otherwise, it will use the observation period end date that contains the index event.
+Use the era end date of ACE inhibitors1
+
+    allowing 30 days between exposures
+    adding 0 days after exposure end
+
+Cohort Collapse Strategy:
+Collapse cohort by era with a gap size of 0 days.
+Appendix 1: Concept Set Definitions
+
+1. ACE inhibitors
+Show entries
+Search:
+Concept Id	Concept Name	Domain	Vocabulary	Excluded	Descendants	Mapped
+1308216	Lisinopril	Drug	RxNorm	NO	YES	NO
+1310756	moexipril	Drug	RxNorm	NO	YES	NO
+1331235	quinapril	Drug	RxNorm	NO	YES	NO
+1334456	Ramipril	Drug	RxNorm	NO	YES	NO
+1335471	benazepril	Drug	RxNorm	NO	YES	NO
+1340128	Captopril	Drug	RxNorm	NO	YES	NO
+1341927	Enalapril	Drug	RxNorm	NO	YES	NO
+1342439	trandolapril	Drug	RxNorm	NO	YES	NO
+1363749	Fosinopril	Drug	RxNorm	NO	YES	NO
+1373225	Perindopril	Drug	RxNorm	NO	YES	NO
+Showing 1 to 10 of 10 entries
+Previous1Next
+
+2. Hypertension drugs
+Show entries
+Search:
+Concept Id	Concept Name	Domain	Vocabulary	Excluded	Descendants	Mapped
+904542	Triamterene	Drug	RxNorm	NO	YES	NO
+907013	Metolazone	Drug	RxNorm	NO	YES	NO
+932745	Bumetanide	Drug	RxNorm	NO	YES	NO
+942350	torsemide	Drug	RxNorm	NO	YES	NO
+956874	Furosemide	Drug	RxNorm	NO	YES	NO
+970250	Spironolactone	Drug	RxNorm	NO	YES	NO
+974166	Hydrochlorothiazide	Drug	RxNorm	NO	YES	NO
+978555	Indapamide	Drug	RxNorm	NO	YES	NO
+991382	Amiloride	Drug	RxNorm	NO	YES	NO
+1305447	Methyldopa	Drug	RxNorm	NO	YES	NO
+Showing 1 to 10 of 58 entries
+Previous123456Next
+
+3. Hypertensive disorder
+Show entries
+Search:
+Concept Id	Concept Name	Domain	Vocabulary	Excluded	Descendants	Mapped
+316866	Hypertensive disorder	Condition	SNOMED	NO	YES	NO
+Showing 1 to 1 of 1 entries
+Previous1Next
+
