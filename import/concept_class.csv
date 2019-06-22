@@ -7,4 +7,7 @@ Gender,Gender,44819086
 Model Comp,Model Component,44819058
 Race,Race,44819030
 Relationship,OMOP Relationship,44819274
+Undefined,Undefined,44819044
+Visit,OMOP Visit,44819023
+Visit Type,Visit Type,44819039
 Vocabulary,OMOP Vocabulary,44819279

@@ -6,8 +6,9 @@ INSERT INTO concepts(id) values (316866); -- Hypertensive Disorder
 INSERT INTO concepts(id) values (45768449); -- Hypertensive Crisis
 INSERT INTO concepts(id) values (38003564), (8532), (8527); -- Person 107680.
 INSERT INTO concepts(id) values (4), (44819134), (44819035), (44819108), (44819086), (2), (44819109), (44819030), (3);
-INSERT INTO concepts(id) values (8507);
-
+INSERT INTO concepts(id) values (0), (8507);
+--INSERT INTO concepts(id) values (314666), (4329847); -- Myocardial infarction
+INSERT INTO concepts(id) values (262),(9203),(9201),(44819119),(44819023),(9201),(9202),(44818517),(44819119),(44819023), (8), (44819044), (44819096), (44819039), (58), (44819150);
 
 INSERT INTO concepts(id)
  SELECT ancestor_concept_id as id

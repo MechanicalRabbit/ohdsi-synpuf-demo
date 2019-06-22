@@ -7,4 +7,5 @@
 \copy concept FROM 'concept.csv' WITH CSV HEADER
 \copy location FROM 'location.csv' WITH CSV HEADER
 \copy person FROM 'person.csv' WITH CSV HEADER
+-- \copy visit_occurrence FROM 'visit_occurrence.csv' WITH CSV HEADER
 \include cohort_definition.sql
