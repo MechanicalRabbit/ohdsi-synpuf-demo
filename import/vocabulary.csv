@@ -2,9 +2,11 @@ vocabulary_id,vocabulary_name,vocabulary_reference,vocabulary_version,vocabulary
 CMS Place of Service,Place of Service Codes for Professional Claims (CMS),http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/downloads//Website_POS_database.pdf,2009-01-11,44819110
 Cohort,Legacy OMOP HOI or DOI cohort,OMOP generated,,44819123
 Concept Class,OMOP Concept Class,OMOP generated,,44819233
+Condition Type,OMOP Condition Occurrence Type,OMOP generated,,44819127
 Domain,OMOP Domain,OMOP generated,,44819147
 Ethnicity,OMOP Ethnicity,OMOP generated,,44819134
 Gender,OMOP Gender,OMOP generated,,44819108
+ICD9CM,"International Classification of Diseases, Ninth Revision, Clinical Modification, Volume 1 and 2 (NCHS)",http://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes.html,ICD9CM v32 master descriptions,5046
 None,OMOP Standardized Vocabularies,OMOP generated,v5.0 21-MAY-19,44819096
 Obs Period Type,OMOP Observation Period Type,OMOP generated,,44819149
 Race,Race and Ethnicity Code Set (USBC),http://www.cdc.gov/nchs/data/dvs/Race_Ethnicity_CodeSet.pdf,Version 1.0,44819109

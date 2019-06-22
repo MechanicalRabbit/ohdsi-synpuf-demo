@@ -12,7 +12,7 @@ INSERT INTO concepts(id) values (44814722), (44819149), (44819062); -- Observati
 INSERT INTO concepts(id) values (8717), (8756), (8940), (44819110);
 
 INSERT INTO concepts(id) values (4329847), (312327); -- Myocardial infarction
-
+INSERT INTO concepts(id) values (444406), (38000200), (44825429), (44819127), (44819248), (5046), (45754877), (45754870), (45754876); -- condition_occurrence
 INSERT INTO concepts(id)
  SELECT ancestor_concept_id as id
    FROM concept_ancestor
