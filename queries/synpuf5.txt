@@ -92,3 +92,4 @@ synpuf5=# select count(*) from (select ace.subject_id subject_id, ace.cohort_sta
    242
 (1 row)
 
+

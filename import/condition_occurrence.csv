@@ -1,0 +1,2 @@
+condition_occurrence_id,person_id,condition_concept_id,condition_start_date,condition_end_date,condition_type_concept_id,stop_reason,provider_id,visit_occurrence_id,condition_source_value,condition_source_concept_id
+13374905,107680,444406,2009-07-20,2009-07-30,38000200,,60753,5162803,41071,44825429

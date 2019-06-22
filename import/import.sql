@@ -11,4 +11,5 @@
 \copy care_site FROM 'care_site.csv' WITH CSV HEADER
 \copy provider FROM 'provider.csv' WITH CSV HEADER
 \copy visit_occurrence FROM 'visit_occurrence.csv' WITH CSV HEADER
+--\copy condition_occurrence FROM 'condition_occurrence.csv' WITH CSV HEADER
 \include cohort_definition.sql
