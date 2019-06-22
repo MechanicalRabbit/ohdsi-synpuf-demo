@@ -5,6 +5,8 @@ test:
 	cd import && psql -f import.sql observational
 	psql -q -f ohdsi-cdm/create-indexes.sql observational 
 	psql -q -f ohdsi-cdm/create-constraints.sql observational
+	psql -q -f ohdsi-cdm/create-results.sql observational
+
 
 concepts:
 	cd import && psql -f concepts.sql synpuf5

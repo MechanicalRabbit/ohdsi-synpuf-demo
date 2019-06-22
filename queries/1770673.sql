@@ -15,13 +15,13 @@ SELECT 0 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
 
 ( 
 
-  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (432791)and invalid_reason is null
+  select concept_id from CONCEPT where concept_id in (432791)and invalid_reason is null
 
 UNION  select c.concept_id
 
-  from @vocabulary_database_schema.CONCEPT c
+  from CONCEPT c
 
-  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
 
   and ca.ancestor_concept_id in (432791)
 
@@ -37,13 +37,13 @@ SELECT 1 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
 
 ( 
 
-  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (262,9203,9201)and invalid_reason is null
+  select concept_id from CONCEPT where concept_id in (262,9203,9201)and invalid_reason is null
 
 UNION  select c.concept_id
 
-  from @vocabulary_database_schema.CONCEPT c
+  from CONCEPT c
 
-  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
 
   and ca.ancestor_concept_id in (262,9203,9201)
 
@@ -89,7 +89,7 @@ FROM
 
   SELECT co.* 
 
-  FROM @cdm_database_schema.CONDITION_OCCURRENCE co
+  FROM CONDITION_OCCURRENCE co
 
   JOIN Codesets codesets on ((co.condition_concept_id = codesets.concept_id and codesets.codeset_id = 0))
 
@@ -105,7 +105,7 @@ FROM
 
   ) E
 
-	JOIN @cdm_database_schema.observation_period OP on E.person_id = OP.person_id and E.start_date >=  OP.observation_period_start_date and E.start_date <= op.observation_period_end_date
+	JOIN observation_period OP on E.person_id = OP.person_id and E.start_date >=  OP.observation_period_start_date and E.start_date <= op.observation_period_end_date
 
   WHERE (OP.OBSERVATION_PERIOD_START_DATE + 0*INTERVAL'1 day') <= E.START_DATE AND (E.START_DATE + 0*INTERVAL'1 day') <= OP.OBSERVATION_PERIOD_END_DATE
 
@@ -168,7 +168,7 @@ from
 
   select vo.* 
 
-  FROM @cdm_database_schema.VISIT_OCCURRENCE vo
+  FROM VISIT_OCCURRENCE vo
 
 JOIN Codesets codesets on ((vo.visit_concept_id = codesets.concept_id and codesets.codeset_id = 1))
 
@@ -449,11 +449,11 @@ ANALYZE final_cohort
 
 
 
-DELETE FROM @target_database_schema.@target_cohort_table where cohort_definition_id = @target_cohort_id;
+DELETE FROM cohort where cohort_definition_id = 1770673;
 
-INSERT INTO @target_database_schema.@target_cohort_table (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date)
+INSERT INTO cohort (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date)
 
-select @target_cohort_id as cohort_definition_id, person_id, start_date, end_date 
+select 1770673 as cohort_definition_id, person_id, start_date, end_date 
 FROM final_cohort CO
 
 ;

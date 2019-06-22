@@ -15,13 +15,13 @@ SELECT 0 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
 
 ( 
 
-  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (316866)and invalid_reason is null
+  select concept_id from CONCEPT where concept_id in (316866)and invalid_reason is null
 
 UNION  select c.concept_id
 
-  from @vocabulary_database_schema.CONCEPT c
+  from CONCEPT c
 
-  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
 
   and ca.ancestor_concept_id in (316866)
 
@@ -37,13 +37,13 @@ SELECT 2 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
 
 ( 
 
-  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (1319998,1317967,991382,1332418,1314002,40235485,1335471,1322081,1338005,932745,1351557,1340128,1346823,1395058,1398937,1328165,1363053,1341927,1309799,1346686,1353776,1363749,956874,1344965,1373928,974166,978555,1347384,1326012,1386957,1308216,1367500,1305447,907013,1307046,1309068,1310756,1313200,1314577,1318137,1318853,1319880,40226742,1327978,1373225,1345858,1350489,1353766,1331235,1334456,970250,1317640,1341238,942350,1342439,904542,1308842,1307863)and invalid_reason is null
+  select concept_id from CONCEPT where concept_id in (1319998,1317967,991382,1332418,1314002,40235485,1335471,1322081,1338005,932745,1351557,1340128,1346823,1395058,1398937,1328165,1363053,1341927,1309799,1346686,1353776,1363749,956874,1344965,1373928,974166,978555,1347384,1326012,1386957,1308216,1367500,1305447,907013,1307046,1309068,1310756,1313200,1314577,1318137,1318853,1319880,40226742,1327978,1373225,1345858,1350489,1353766,1331235,1334456,970250,1317640,1341238,942350,1342439,904542,1308842,1307863)and invalid_reason is null
 
 UNION  select c.concept_id
 
-  from @vocabulary_database_schema.CONCEPT c
+  from CONCEPT c
 
-  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
 
   and ca.ancestor_concept_id in (1319998,1317967,991382,1332418,1314002,40235485,1335471,1322081,1338005,932745,1351557,1340128,1346823,1395058,1398937,1328165,1363053,1341927,1309799,1346686,1353776,1363749,956874,1344965,1373928,974166,978555,1347384,1326012,1386957,1308216,1367500,1305447,907013,1307046,1309068,1310756,1313200,1314577,1318137,1318853,1319880,40226742,1327978,1373225,1345858,1350489,1353766,1331235,1334456,970250,1317640,1341238,942350,1342439,904542,1308842,1307863)
 
@@ -59,13 +59,13 @@ SELECT 4 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
 
 ( 
 
-  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (1395058,974166,978555,907013)and invalid_reason is null
+  select concept_id from CONCEPT where concept_id in (1395058,974166,978555,907013)and invalid_reason is null
 
 UNION  select c.concept_id
 
-  from @vocabulary_database_schema.CONCEPT c
+  from CONCEPT c
 
-  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  join CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
 
   and ca.ancestor_concept_id in (1395058,974166,978555,907013)
 
@@ -111,7 +111,7 @@ from
 
   select de.* , row_number() over (PARTITION BY de.person_id ORDER BY de.drug_exposure_start_date, de.drug_exposure_id) as ordinal
 
-  FROM @cdm_database_schema.DRUG_EXPOSURE de
+  FROM DRUG_EXPOSURE de
 
 JOIN Codesets codesets on ((de.drug_concept_id = codesets.concept_id and codesets.codeset_id = 4))
 
@@ -127,7 +127,7 @@ WHERE C.ordinal = 1
 
   ) E
 
-	JOIN @cdm_database_schema.observation_period OP on E.person_id = OP.person_id and E.start_date >=  OP.observation_period_start_date and E.start_date <= op.observation_period_end_date
+	JOIN observation_period OP on E.person_id = OP.person_id and E.start_date >=  OP.observation_period_start_date and E.start_date <= op.observation_period_end_date
 
   WHERE (OP.OBSERVATION_PERIOD_START_DATE + 365*INTERVAL'1 day') <= E.START_DATE AND (E.START_DATE + 0*INTERVAL'1 day') <= OP.OBSERVATION_PERIOD_END_DATE
 
@@ -222,7 +222,7 @@ FROM
 
   SELECT co.* 
 
-  FROM @cdm_database_schema.CONDITION_OCCURRENCE co
+  FROM CONDITION_OCCURRENCE co
 
   JOIN Codesets codesets on ((co.condition_concept_id = codesets.concept_id and codesets.codeset_id = 0))
 
@@ -319,7 +319,7 @@ from
 
   select de.* 
 
-  FROM @cdm_database_schema.DRUG_EXPOSURE de
+  FROM DRUG_EXPOSURE de
 
 JOIN Codesets codesets on ((de.drug_concept_id = codesets.concept_id and codesets.codeset_id = 2))
 
@@ -416,7 +416,7 @@ from
 
   select de.* 
 
-  FROM @cdm_database_schema.DRUG_ERA de
+  FROM DRUG_ERA de
 
 where de.drug_concept_id in (SELECT concept_id from  Codesets where codeset_id = 2)
 
@@ -559,7 +559,7 @@ FROM
 
 	select de.PERSON_ID, DRUG_EXPOSURE_START_DATE,  COALESCE(DRUG_EXPOSURE_END_DATE, (DRUG_EXPOSURE_START_DATE + DAYS_SUPPLY*INTERVAL'1 day'), (DRUG_EXPOSURE_START_DATE + 1*INTERVAL'1 day')) as DRUG_EXPOSURE_END_DATE 
 
-	FROM @cdm_database_schema.DRUG_EXPOSURE de
+	FROM DRUG_EXPOSURE de
 
 	JOIN ctePersons p on de.person_id = p.person_id
 
@@ -573,7 +573,7 @@ FROM
 
 	select de.PERSON_ID, DRUG_EXPOSURE_START_DATE,  COALESCE(DRUG_EXPOSURE_END_DATE, (DRUG_EXPOSURE_START_DATE + DAYS_SUPPLY*INTERVAL'1 day'), (DRUG_EXPOSURE_START_DATE + 1*INTERVAL'1 day')) as DRUG_EXPOSURE_END_DATE 
 
-	FROM @cdm_database_schema.DRUG_EXPOSURE de
+	FROM DRUG_EXPOSURE de
 
 	JOIN ctePersons p on de.person_id = p.person_id
 
@@ -843,11 +843,11 @@ ANALYZE final_cohort
 
 
 
-DELETE FROM @target_database_schema.@target_cohort_table where cohort_definition_id = @target_cohort_id;
+DELETE FROM cohort where cohort_definition_id = 1770676;
 
-INSERT INTO @target_database_schema.@target_cohort_table (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date)
+INSERT INTO cohort (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date)
 
-select @target_cohort_id as cohort_definition_id, person_id, start_date, end_date 
+select 1770676 as cohort_definition_id, person_id, start_date, end_date 
 FROM final_cohort CO
 
 ;
