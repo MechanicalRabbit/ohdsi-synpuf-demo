@@ -1,3 +1,6 @@
 domain_id,domain_name,domain_concept_id
 Condition,Condition,19
+Ethnicity,Ethnicity,4
+Gender,Gender,2
 Metadata,Metadata,7
+Race,Race,3

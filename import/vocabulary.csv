@@ -1,6 +1,9 @@
 vocabulary_id,vocabulary_name,vocabulary_reference,vocabulary_version,vocabulary_concept_id
 Concept Class,OMOP Concept Class,OMOP generated,,44819233
 Domain,OMOP Domain,OMOP generated,,44819147
+Ethnicity,OMOP Ethnicity,OMOP generated,,44819134
+Gender,OMOP Gender,OMOP generated,,44819108
+Race,Race and Ethnicity Code Set (USBC),http://www.cdc.gov/nchs/data/dvs/Race_Ethnicity_CodeSet.pdf,Version 1.0,44819109
 Relationship,OMOP Relationship,OMOP generated,,44819235
 SNOMED,Systematic Nomenclature of Medicine - Clinical Terms (IHTSDO),http://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html,Snomed Release 20190131,44819097
 Vocabulary,OMOP Vocabulary,OMOP generated,,44819232

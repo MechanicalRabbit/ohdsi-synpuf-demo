@@ -1,4 +1,7 @@
 ancestor_concept_id,descendant_concept_id,min_levels_of_separation,max_levels_of_separation
+8507,8507,0,0
+8527,8527,0,0
+8532,8532,0,0
 134057,134057,0,0
 441840,134057,3,4
 4023995,134057,1,1
@@ -36,6 +39,7 @@ ancestor_concept_id,descendant_concept_id,min_levels_of_separation,max_levels_of
 4023995,4277352,1,1
 4042140,4277352,2,2
 4277352,4277352,0,0
+38003564,38003564,0,0
 134057,45768449,2,2
 316866,45768449,1,1
 441840,45768449,5,6
