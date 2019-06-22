@@ -1,4 +1,5 @@
 vocabulary_id,vocabulary_name,vocabulary_reference,vocabulary_version,vocabulary_concept_id
+CMS Place of Service,Place of Service Codes for Professional Claims (CMS),http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/downloads//Website_POS_database.pdf,2009-01-11,44819110
 Concept Class,OMOP Concept Class,OMOP generated,,44819233
 Domain,OMOP Domain,OMOP generated,,44819147
 Ethnicity,OMOP Ethnicity,OMOP generated,,44819134
