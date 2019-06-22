@@ -1,0 +1,7 @@
+synpuf5=# select cohort_definition_id, count(*) from cohort group by cohort_definition_id;
+ cohort_definition_id | count                                                                                                                     
+----------------------+-------                                                                                                                    
+              1770675 |   262                                                                                                                     
+              1770676 |   109                                                                                                                     
+              1770674 |  2820                                                                                                                     
+(3 rows) 
