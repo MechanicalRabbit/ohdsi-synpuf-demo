@@ -58,33 +58,3 @@ CREATE TABLE cohort_definition (
   cohort_initiation_date			DATE			NULL
 )
 ;
-
-
-ALTER TABLE cohort ADD CONSTRAINT xpk_cohort PRIMARY KEY ( cohort_definition_id, subject_id, cohort_start_date, cohort_end_date  ) ;
-
-ALTER TABLE cohort_definition ADD CONSTRAINT xpk_cohort_definition PRIMARY KEY (cohort_definition_id);
-
-
-CREATE INDEX idx_cohort_definition_id  ON cohort_definition  (cohort_definition_id ASC);
-CLUSTER cohort_definition  USING idx_cohort_definition_id ;
-
-CREATE INDEX idx_cohort_subject_id ON cohort (subject_id ASC);
-CREATE INDEX idx_cohort_c_definition_id ON cohort (cohort_definition_id ASC);
-
-
-ALTER TABLE cohort_definition ADD CONSTRAINT fpk_cohort_definition_concept FOREIGN KEY (definition_type_concept_id)  REFERENCES concept (concept_id);
-
-ALTER TABLE cohort_definition ADD CONSTRAINT fpk_subject_concept FOREIGN KEY (subject_concept_id)  REFERENCES concept (concept_id);
-
-
-ALTER TABLE cohort ADD CONSTRAINT fpk_cohort_definition FOREIGN KEY (cohort_definition_id)  REFERENCES cohort_definition (cohort_definition_id);
-
-
-
-
-
-
-
-
-
-
