@@ -1,10 +1,10 @@
 build:
-	dropdb --if-exists observational
-	createdb observational
-	psql -q -f ohdsi-cdm/create-database.sql observational
-	cd import && psql -f import.sql observational
-	psql -q -f ohdsi-cdm/create-indexes.sql observational 
-	psql -q -f ohdsi-cdm/create-constraints.sql observational
+	dropdb --if-exists synpuf-10p
+	createdb synpuf-10p
+	psql -q -f ohdsi-cdm/create-database.sql synpuf-10p
+	cd import && psql -f import.sql synpuf-10p
+	psql -q -f ohdsi-cdm/create-indexes.sql synpuf-10p 
+	psql -q -f ohdsi-cdm/create-constraints.sql synpuf-10p
 
 
 # these are unnecessary unless updating import files

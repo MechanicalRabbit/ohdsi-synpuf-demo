@@ -12,7 +12,9 @@
 -- It is based upon SynPUF data, including 10 patients which are
 -- in the above cohorts according to the SQL file exported from 
 -- the Atlas System. This dataset is far from complete, it only
--- includes what's necessary to get cohort hits.
+-- includes what's necessary to get cohort hits. Since there are
+-- only 10 patients, individual inserts are used in this file,
+-- in this way hacking for other databases should be possible.
 --
 -- This file contains limited SNOMED and RxNorm codes, among
 -- others. For SNOMED, it only includes codes for relevent 
@@ -22,9 +24,6 @@
 -- for OHDSI is in the public interest, this seems "fair use".
 ----------------------------------------------------------------
 
---
--- Name: attribute_definition; Type: TABLE; 
---
 
 CREATE TABLE attribute_definition (
     attribute_definition_id integer NOT NULL,
@@ -35,9 +34,6 @@ CREATE TABLE attribute_definition (
 );
 
 
---
--- Name: care_site; Type: TABLE; 
---
 
 CREATE TABLE care_site (
     care_site_id integer NOT NULL,
@@ -49,9 +45,6 @@ CREATE TABLE care_site (
 );
 
 
---
--- Name: cdm_source; Type: TABLE; 
---
 
 CREATE TABLE cdm_source (
     cdm_source_name character varying(255) NOT NULL,
@@ -67,9 +60,6 @@ CREATE TABLE cdm_source (
 );
 
 
---
--- Name: cohort; Type: TABLE; 
---
 
 CREATE TABLE cohort (
     cohort_definition_id integer NOT NULL,
@@ -79,9 +69,6 @@ CREATE TABLE cohort (
 );
 
 
---
--- Name: cohort_ace; Type: VIEW; 
---
 
 CREATE VIEW cohort_ace AS
  SELECT cohort.cohort_definition_id,
@@ -92,9 +79,6 @@ CREATE VIEW cohort_ace AS
   WHERE (cohort.cohort_definition_id = 1770675);
 
 
---
--- Name: cohort_all; Type: VIEW; 
---
 
 CREATE VIEW cohort_all AS
  SELECT cohort.cohort_definition_id,
@@ -105,9 +89,6 @@ CREATE VIEW cohort_all AS
   WHERE (cohort.cohort_definition_id = ANY (ARRAY[1770673, 1770674, 1770675, 1770676]));
 
 
---
--- Name: cohort_ami; Type: VIEW; 
---
 
 CREATE VIEW cohort_ami AS
  SELECT cohort.cohort_definition_id,
@@ -118,9 +99,6 @@ CREATE VIEW cohort_ami AS
   WHERE (cohort.cohort_definition_id = 1770674);
 
 
---
--- Name: cohort_ang; Type: VIEW; 
---
 
 CREATE VIEW cohort_ang AS
  SELECT cohort.cohort_definition_id,
@@ -131,9 +109,6 @@ CREATE VIEW cohort_ang AS
   WHERE (cohort.cohort_definition_id = 1770673);
 
 
---
--- Name: cohort_attribute; Type: TABLE; 
---
 
 CREATE TABLE cohort_attribute (
     cohort_definition_id integer NOT NULL,
@@ -146,9 +121,6 @@ CREATE TABLE cohort_attribute (
 );
 
 
---
--- Name: cohort_definition; Type: TABLE; 
---
 
 CREATE TABLE cohort_definition (
     cohort_definition_id integer NOT NULL,
@@ -161,9 +133,6 @@ CREATE TABLE cohort_definition (
 );
 
 
---
--- Name: cohort_dia; Type: VIEW; 
---
 
 CREATE VIEW cohort_dia AS
  SELECT cohort.cohort_definition_id,
@@ -174,9 +143,6 @@ CREATE VIEW cohort_dia AS
   WHERE (cohort.cohort_definition_id = 1770676);
 
 
---
--- Name: concept; Type: TABLE; 
---
 
 CREATE TABLE concept (
     concept_id integer NOT NULL,
@@ -192,9 +158,6 @@ CREATE TABLE concept (
 );
 
 
---
--- Name: concept_ancestor; Type: TABLE; 
---
 
 CREATE TABLE concept_ancestor (
     ancestor_concept_id integer NOT NULL,
@@ -204,9 +167,6 @@ CREATE TABLE concept_ancestor (
 );
 
 
---
--- Name: condition_occurrence; Type: TABLE; 
---
 
 CREATE TABLE condition_occurrence (
     condition_occurrence_id integer NOT NULL,
@@ -224,9 +184,6 @@ CREATE TABLE condition_occurrence (
 
 
 
---
--- Name: concept_class; Type: TABLE; 
---
 
 CREATE TABLE concept_class (
     concept_class_id character varying(20) NOT NULL,
@@ -235,9 +192,6 @@ CREATE TABLE concept_class (
 );
 
 
---
--- Name: concept_relationship; Type: TABLE; 
---
 
 CREATE TABLE concept_relationship (
     concept_id_1 integer NOT NULL,
@@ -249,9 +203,6 @@ CREATE TABLE concept_relationship (
 );
 
 
---
--- Name: concept_synonym; Type: TABLE; 
---
 
 CREATE TABLE concept_synonym (
     concept_id integer NOT NULL,
@@ -260,9 +211,6 @@ CREATE TABLE concept_synonym (
 );
 
 
---
--- Name: condition_era_sequence; Type: SEQUENCE; 
---
 
 CREATE SEQUENCE condition_era_sequence
     START WITH 1
@@ -272,9 +220,6 @@ CREATE SEQUENCE condition_era_sequence
     CACHE 1;
 
 
---
--- Name: condition_era; Type: TABLE; 
---
 
 CREATE TABLE condition_era (
     condition_era_id integer DEFAULT nextval('condition_era_sequence'::regclass) NOT NULL,
@@ -286,9 +231,6 @@ CREATE TABLE condition_era (
 );
 
 
---
--- Name: death; Type: TABLE; 
---
 
 CREATE TABLE death (
     person_id integer NOT NULL,
@@ -300,9 +242,6 @@ CREATE TABLE death (
 );
 
 
---
--- Name: device_cost; Type: TABLE; 
---
 
 CREATE TABLE device_cost (
     device_cost_id integer NOT NULL,
@@ -319,9 +258,6 @@ CREATE TABLE device_cost (
 );
 
 
---
--- Name: device_exposure; Type: TABLE; 
---
 
 CREATE TABLE device_exposure (
     device_exposure_id integer NOT NULL,
@@ -339,9 +275,6 @@ CREATE TABLE device_exposure (
 );
 
 
---
--- Name: domain; Type: TABLE; 
---
 
 CREATE TABLE domain (
     domain_id character varying(20) NOT NULL,
@@ -350,9 +283,6 @@ CREATE TABLE domain (
 );
 
 
---
--- Name: dose_era; Type: TABLE; 
---
 
 CREATE TABLE dose_era (
     dose_era_id integer NOT NULL,
@@ -365,9 +295,6 @@ CREATE TABLE dose_era (
 );
 
 
---
--- Name: drug_cost; Type: TABLE; 
---
 
 CREATE TABLE drug_cost (
     drug_cost_id integer NOT NULL,
@@ -387,9 +314,6 @@ CREATE TABLE drug_cost (
 );
 
 
---
--- Name: drug_era_sequence; Type: SEQUENCE; 
---
 
 CREATE SEQUENCE drug_era_sequence
     START WITH 1
@@ -399,9 +323,6 @@ CREATE SEQUENCE drug_era_sequence
     CACHE 1;
 
 
---
--- Name: drug_era; Type: TABLE; 
---
 
 CREATE TABLE drug_era (
     drug_era_id integer DEFAULT nextval('drug_era_sequence'::regclass) NOT NULL,
@@ -414,9 +335,6 @@ CREATE TABLE drug_era (
 );
 
 
---
--- Name: drug_exposure; Type: TABLE; 
---
 
 CREATE TABLE drug_exposure (
     drug_exposure_id integer NOT NULL,
@@ -443,9 +361,6 @@ CREATE TABLE drug_exposure (
 );
 
 
---
--- Name: drug_strength; Type: TABLE; 
---
 
 CREATE TABLE drug_strength (
     drug_concept_id integer NOT NULL,
@@ -463,9 +378,6 @@ CREATE TABLE drug_strength (
 );
 
 
---
--- Name: fact_relationship; Type: TABLE; 
---
 
 CREATE TABLE fact_relationship (
     domain_concept_id_1 integer NOT NULL,
@@ -476,9 +388,6 @@ CREATE TABLE fact_relationship (
 );
 
 
---
--- Name: location; Type: TABLE; 
---
 
 CREATE TABLE location (
     location_id integer NOT NULL,
@@ -492,9 +401,6 @@ CREATE TABLE location (
 );
 
 
---
--- Name: measurement; Type: TABLE; 
---
 
 CREATE TABLE measurement (
     measurement_id integer NOT NULL,
@@ -518,9 +424,6 @@ CREATE TABLE measurement (
 );
 
 
---
--- Name: note; Type: TABLE; 
---
 
 CREATE TABLE note (
     note_id integer NOT NULL,
@@ -535,9 +438,6 @@ CREATE TABLE note (
 );
 
 
---
--- Name: observation; Type: TABLE; 
---
 
 CREATE TABLE observation (
     observation_id integer NOT NULL,
@@ -560,9 +460,6 @@ CREATE TABLE observation (
 );
 
 
---
--- Name: observation_period; Type: TABLE; 
---
 
 CREATE TABLE observation_period (
     observation_period_id integer NOT NULL,
@@ -573,9 +470,6 @@ CREATE TABLE observation_period (
 );
 
 
---
--- Name: payer_plan_period; Type: TABLE; 
---
 
 CREATE TABLE payer_plan_period (
     payer_plan_period_id integer NOT NULL,
@@ -588,9 +482,6 @@ CREATE TABLE payer_plan_period (
 );
 
 
---
--- Name: person; Type: TABLE; 
---
 
 CREATE TABLE person (
     person_id integer NOT NULL,
@@ -614,9 +505,6 @@ CREATE TABLE person (
 );
 
 
---
--- Name: procedure_cost; Type: TABLE; 
---
 
 CREATE TABLE procedure_cost (
     procedure_cost_id integer NOT NULL,
@@ -635,9 +523,6 @@ CREATE TABLE procedure_cost (
 );
 
 
---
--- Name: procedure_occurrence; Type: TABLE; 
---
 
 CREATE TABLE procedure_occurrence (
     procedure_occurrence_id integer NOT NULL,
@@ -655,9 +540,6 @@ CREATE TABLE procedure_occurrence (
 );
 
 
---
--- Name: provider; Type: TABLE; 
---
 
 CREATE TABLE provider (
     provider_id integer NOT NULL,
@@ -676,9 +558,6 @@ CREATE TABLE provider (
 );
 
 
---
--- Name: relationship; Type: TABLE; 
---
 
 CREATE TABLE relationship (
     relationship_id character varying(20) NOT NULL,
@@ -690,9 +569,6 @@ CREATE TABLE relationship (
 );
 
 
---
--- Name: source_to_concept_map; Type: TABLE; 
---
 
 CREATE TABLE source_to_concept_map (
     source_code character varying(50) NOT NULL,
@@ -707,9 +583,6 @@ CREATE TABLE source_to_concept_map (
 );
 
 
---
--- Name: specimen; Type: TABLE; 
---
 
 CREATE TABLE specimen (
     specimen_id integer NOT NULL,
@@ -730,9 +603,6 @@ CREATE TABLE specimen (
 );
 
 
---
--- Name: visit_cost; Type: TABLE; 
---
 
 CREATE TABLE visit_cost (
     visit_cost_id integer NOT NULL,
@@ -749,9 +619,6 @@ CREATE TABLE visit_cost (
 );
 
 
---
--- Name: visit_occurrence; Type: TABLE; 
---
 
 CREATE TABLE visit_occurrence (
     visit_occurrence_id bigint NOT NULL,
@@ -769,9 +636,6 @@ CREATE TABLE visit_occurrence (
 );
 
 
---
--- Name: vocabulary; Type: TABLE; 
---
 
 CREATE TABLE vocabulary (
     vocabulary_id character varying(20) NOT NULL,
@@ -782,15 +646,9 @@ CREATE TABLE vocabulary (
 );
 
 
---
--- Data for Name: attribute_definition; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: care_site; Type: TABLE DATA; 
---
 
 INSERT INTO care_site (care_site_id, care_site_name, place_of_service_concept_id, location_id, care_site_source_value, place_of_service_source_value) VALUES (13, NULL, 8940, NULL, '673314266', ' ');
 INSERT INTO care_site (care_site_id, care_site_name, place_of_service_concept_id, location_id, care_site_source_value, place_of_service_source_value) VALUES (40, NULL, 8940, NULL, '532092265', ' ');
@@ -825,15 +683,9 @@ INSERT INTO care_site (care_site_id, care_site_name, place_of_service_concept_id
 INSERT INTO care_site (care_site_id, care_site_name, place_of_service_concept_id, location_id, care_site_source_value, place_of_service_source_value) VALUES (137825, NULL, 8756, NULL, '2513SJ', 'Outpatient Facility');
 
 
---
--- Data for Name: cdm_source; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: cohort; Type: TABLE DATA; 
---
 
 INSERT INTO cohort (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date) VALUES (1770676, 95538, '2010-01-20', '2010-02-19');
 INSERT INTO cohort (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date) VALUES (1770676, 1780, '2009-03-02', '2009-04-01');
@@ -853,15 +705,9 @@ INSERT INTO cohort (cohort_definition_id, subject_id, cohort_start_date, cohort_
 INSERT INTO cohort (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date) VALUES (1770674, 30091, '2009-08-02', '2009-08-09');
 
 
---
--- Data for Name: cohort_attribute; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: cohort_definition; Type: TABLE DATA; 
---
 
 INSERT INTO cohort_definition (cohort_definition_id, cohort_definition_name, cohort_definition_description, definition_type_concept_id, cohort_definition_syntax, subject_concept_id, cohort_initiation_date) VALUES (1770673, 'Angioedema events', NULL, 44819246, NULL, 56, NULL);
 INSERT INTO cohort_definition (cohort_definition_id, cohort_definition_name, cohort_definition_description, definition_type_concept_id, cohort_definition_syntax, subject_concept_id, cohort_initiation_date) VALUES (1770674, 'Acute myocardial infarction events', NULL, 44819246, NULL, 56, NULL);
@@ -869,9 +715,6 @@ INSERT INTO cohort_definition (cohort_definition_id, cohort_definition_name, coh
 INSERT INTO cohort_definition (cohort_definition_id, cohort_definition_name, cohort_definition_description, definition_type_concept_id, cohort_definition_syntax, subject_concept_id, cohort_initiation_date) VALUES (1770676, 'New users of Thiazide-like diuretics as first-line monotherapy for hypertension', NULL, 44819246, NULL, 56, NULL);
 
 
---
--- Data for Name: concept; Type: TABLE DATA; 
---
 
 INSERT INTO concept (concept_id, concept_name, domain_id, vocabulary_id, concept_class_id, standard_concept, concept_code, valid_start_date, valid_end_date, invalid_reason) VALUES (0, 'No matching concept', 'Metadata', 'None', 'Undefined', NULL, 'No matching concept', '1970-01-01', '2099-12-31', NULL);
 INSERT INTO concept (concept_id, concept_name, domain_id, vocabulary_id, concept_class_id, standard_concept, concept_code, valid_start_date, valid_end_date, invalid_reason) VALUES (2, 'Gender', 'Metadata', 'Domain', 'Domain', NULL, 'OMOP generated', '1970-01-01', '2099-12-31', NULL);
@@ -1014,9 +857,6 @@ INSERT INTO concept (concept_id, concept_name, domain_id, vocabulary_id, concept
 INSERT INTO concept (concept_id, concept_name, domain_id, vocabulary_id, concept_class_id, standard_concept, concept_code, valid_start_date, valid_end_date, invalid_reason) VALUES (45768449, 'Hypertensive crisis', 'Condition', 'SNOMED', 'Clinical Finding', 'S', '706882009', '2015-01-31', '2099-12-31', NULL);
 
 
---
--- Data for Name: concept_ancestor; Type: TABLE DATA; 
---
 
 INSERT INTO concept_ancestor (ancestor_concept_id, descendant_concept_id, min_levels_of_separation, max_levels_of_separation) VALUES (9201, 8717, 1, 1);
 INSERT INTO concept_ancestor (ancestor_concept_id, descendant_concept_id, min_levels_of_separation, max_levels_of_separation) VALUES (9202, 8756, 1, 1);
@@ -1051,9 +891,6 @@ INSERT INTO concept_ancestor (ancestor_concept_id, descendant_concept_id, min_le
 INSERT INTO concept_ancestor (ancestor_concept_id, descendant_concept_id, min_levels_of_separation, max_levels_of_separation) VALUES (45768449, 318437, 3, 3);
 
 
---
--- Data for Name: concept_class; Type: TABLE DATA; 
---
 
 INSERT INTO concept_class (concept_class_id, concept_class_name, concept_class_concept_id) VALUES ('11-digit NDC', '11-digit NDC code', 44819243);
 INSERT INTO concept_class (concept_class_id, concept_class_name, concept_class_concept_id) VALUES ('3-dig nonbill code', '3-digit non-billing code', 45754876);
@@ -1081,9 +918,6 @@ INSERT INTO concept_class (concept_class_id, concept_class_name, concept_class_c
 INSERT INTO concept_class (concept_class_id, concept_class_name, concept_class_concept_id) VALUES ('Vocabulary', 'OMOP Vocabulary', 44819279);
 
 
---
--- Data for Name: concept_relationship; Type: TABLE DATA; 
---
 
 INSERT INTO concept_relationship (concept_id_1, concept_id_2, relationship_id, valid_start_date, valid_end_date, invalid_reason) VALUES (8717, 9201, 'Is a', '1970-01-01', '2099-12-31', NULL);
 INSERT INTO concept_relationship (concept_id_1, concept_id_2, relationship_id, valid_start_date, valid_end_date, invalid_reason) VALUES (8756, 9202, 'Is a', '1970-01-01', '2099-12-31', NULL);
@@ -1124,21 +958,12 @@ INSERT INTO concept_relationship (concept_id_1, concept_id_2, relationship_id, v
 INSERT INTO concept_relationship (concept_id_1, concept_id_2, relationship_id, valid_start_date, valid_end_date, invalid_reason) VALUES (45768449, 316866, 'Is a', '2015-01-31', '2099-12-31', NULL);
 
 
---
--- Data for Name: concept_synonym; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: condition_era; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: condition_occurrence; Type: TABLE DATA; 
---
 
 INSERT INTO condition_occurrence (condition_occurrence_id, person_id, condition_concept_id, condition_start_date, condition_end_date, condition_type_concept_id, stop_reason, provider_id, visit_occurrence_id, condition_source_value, condition_source_concept_id) VALUES (228060, 1780, 319826, '2008-11-22', '2008-11-22', 38000230, NULL, 12674, 88214, '40599', 44835925);
 INSERT INTO condition_occurrence (condition_occurrence_id, person_id, condition_concept_id, condition_start_date, condition_end_date, condition_type_concept_id, stop_reason, provider_id, visit_occurrence_id, condition_source_value, condition_source_concept_id) VALUES (228161, 1780, 312327, '2008-04-10', '2008-04-10', 38000230, NULL, 61112, 88246, '41090', 44835928);
@@ -1168,27 +993,15 @@ INSERT INTO condition_occurrence (condition_occurrence_id, person_id, condition_
 INSERT INTO condition_occurrence (condition_occurrence_id, person_id, condition_concept_id, condition_start_date, condition_end_date, condition_type_concept_id, stop_reason, provider_id, visit_occurrence_id, condition_source_value, condition_source_concept_id) VALUES (13769260, 110862, 312327, '2010-06-07', '2010-06-07', 38000230, NULL, 192777, 5314696, '41090', 44835928);
 
 
---
--- Data for Name: death; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: device_cost; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: device_exposure; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: domain; Type: TABLE DATA; 
---
 
 INSERT INTO domain (domain_id, domain_name, domain_concept_id) VALUES ('Condition', 'Condition', 19);
 INSERT INTO domain (domain_id, domain_name, domain_concept_id) VALUES ('Drug', 'Drug', 13);
@@ -1200,21 +1013,12 @@ INSERT INTO domain (domain_id, domain_name, domain_concept_id) VALUES ('Type Con
 INSERT INTO domain (domain_id, domain_name, domain_concept_id) VALUES ('Visit', 'Visit', 8);
 
 
---
--- Data for Name: dose_era; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: drug_cost; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: drug_era; Type: TABLE DATA; 
---
 
 INSERT INTO drug_era (drug_era_id, person_id, drug_concept_id, drug_era_start_date, drug_era_end_date, drug_exposure_count, gap_days) VALUES (84172, 1780, 974166, '2009-03-02', '2009-04-01', 1, 0);
 INSERT INTO drug_era (drug_era_id, person_id, drug_concept_id, drug_era_start_date, drug_era_end_date, drug_exposure_count, gap_days) VALUES (84173, 1780, 1373928, '2009-06-02', '2009-07-02', 1, 0);
@@ -1231,9 +1035,6 @@ INSERT INTO drug_era (drug_era_id, person_id, drug_concept_id, drug_era_start_da
 INSERT INTO drug_era (drug_era_id, person_id, drug_concept_id, drug_era_start_date, drug_era_end_date, drug_exposure_count, gap_days) VALUES (5504602, 110862, 1341927, '2010-04-05', '2010-05-05', 1, 0);
 
 
---
--- Data for Name: drug_exposure; Type: TABLE DATA; 
---
 
 INSERT INTO drug_exposure (drug_exposure_id, person_id, drug_concept_id, drug_exposure_start_date, drug_exposure_end_date, drug_type_concept_id, stop_reason, refills, quantity, days_supply, sig, route_concept_id, effective_drug_dose, dose_unit_concept_id, lot_number, provider_id, visit_occurrence_id, drug_source_value, drug_source_concept_id, route_source_value, dose_unit_source_value) VALUES (92183, 1780, 40174825, '2009-06-02', NULL, 38000175, NULL, NULL, 0.0, 30, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '61392063739', 45039771, NULL, NULL);
 INSERT INTO drug_exposure (drug_exposure_id, person_id, drug_concept_id, drug_exposure_start_date, drug_exposure_end_date, drug_type_concept_id, stop_reason, refills, quantity, days_supply, sig, route_concept_id, effective_drug_dose, dose_unit_concept_id, lot_number, provider_id, visit_occurrence_id, drug_source_value, drug_source_concept_id, route_source_value, dose_unit_source_value) VALUES (92184, 1780, 19019044, '2009-03-02', NULL, 38000175, NULL, NULL, 10.0, 30, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '12634047150', 45082806, NULL, NULL);
@@ -1250,21 +1051,12 @@ INSERT INTO drug_exposure (drug_exposure_id, person_id, drug_concept_id, drug_ex
 INSERT INTO drug_exposure (drug_exposure_id, person_id, drug_concept_id, drug_exposure_start_date, drug_exposure_end_date, drug_type_concept_id, stop_reason, refills, quantity, days_supply, sig, route_concept_id, effective_drug_dose, dose_unit_concept_id, lot_number, provider_id, visit_occurrence_id, drug_source_value, drug_source_concept_id, route_source_value, dose_unit_source_value) VALUES (6000730, 110862, 40165773, '2010-04-05', NULL, 38000175, NULL, NULL, 30.0, 30, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '51672404003', 44967315, NULL, NULL);
 
 
---
--- Data for Name: drug_strength; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: fact_relationship; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: location; Type: TABLE DATA; 
---
 
 INSERT INTO location (location_id, address_1, address_2, city, state, zip, county, location_source_value) VALUES (9, NULL, NULL, NULL, 'MI', NULL, '23810', '23-810');
 INSERT INTO location (location_id, address_1, address_2, city, state, zip, county, location_source_value) VALUES (116, NULL, NULL, NULL, 'WA', NULL, '50260', '50-260');
@@ -1278,27 +1070,15 @@ INSERT INTO location (location_id, address_1, address_2, city, state, zip, count
 INSERT INTO location (location_id, address_1, address_2, city, state, zip, county, location_source_value) VALUES (2136, NULL, NULL, NULL, 'IL', NULL, '14110', '14-110');
 
 
---
--- Data for Name: measurement; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: note; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: observation; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: observation_period; Type: TABLE DATA; 
---
 
 INSERT INTO observation_period (observation_period_id, person_id, observation_period_start_date, observation_period_end_date, period_type_concept_id) VALUES (1600, 1780, '2008-02-23', '2009-08-01', 44814722);
 INSERT INTO observation_period (observation_period_id, person_id, observation_period_start_date, observation_period_end_date, period_type_concept_id) VALUES (27210, 30091, '2008-02-09', '2010-07-20', 44814722);
@@ -1312,15 +1092,9 @@ INSERT INTO observation_period (observation_period_id, person_id, observation_pe
 INSERT INTO observation_period (observation_period_id, person_id, observation_period_start_date, observation_period_end_date, period_type_concept_id) VALUES (99931, 110862, '2008-01-04', '2010-09-13', 44814722);
 
 
---
--- Data for Name: payer_plan_period; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: person; Type: TABLE DATA; 
---
 
 INSERT INTO person (person_id, gender_concept_id, year_of_birth, month_of_birth, day_of_birth, time_of_birth, race_concept_id, ethnicity_concept_id, location_id, provider_id, care_site_id, person_source_value, gender_source_value, gender_source_concept_id, race_source_value, race_source_concept_id, ethnicity_source_value, ethnicity_source_concept_id) VALUES (1780, 8532, 1940, 2, 1, NULL, 8516, 38003564, 229, NULL, NULL, '03C244F1A64B223A', '2', NULL, '2', NULL, '2', NULL);
 INSERT INTO person (person_id, gender_concept_id, year_of_birth, month_of_birth, day_of_birth, time_of_birth, race_concept_id, ethnicity_concept_id, location_id, provider_id, care_site_id, person_source_value, gender_source_value, gender_source_concept_id, race_source_value, race_source_concept_id, ethnicity_source_value, ethnicity_source_concept_id) VALUES (30091, 8532, 1932, 8, 1, NULL, 8527, 38003564, 2135, NULL, NULL, '41C0357AA0641AEC', '2', NULL, '1', NULL, '1', NULL);
@@ -1334,21 +1108,12 @@ INSERT INTO person (person_id, gender_concept_id, year_of_birth, month_of_birth,
 INSERT INTO person (person_id, gender_concept_id, year_of_birth, month_of_birth, day_of_birth, time_of_birth, race_concept_id, ethnicity_concept_id, location_id, provider_id, care_site_id, person_source_value, gender_source_value, gender_source_concept_id, race_source_value, race_source_concept_id, ethnicity_source_value, ethnicity_source_concept_id) VALUES (110862, 8507, 1911, 4, 1, NULL, 8527, 38003564, 436, NULL, NULL, 'F3EFC3CB3F2C9D5E', '1', NULL, '1', NULL, '1', NULL);
 
 
---
--- Data for Name: procedure_cost; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: procedure_occurrence; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: provider; Type: TABLE DATA; 
---
 
 INSERT INTO provider (provider_id, provider_name, npi, dea, specialty_concept_id, care_site_id, year_of_birth, gender_concept_id, provider_source_value, specialty_source_value, specialty_source_concept_id, gender_source_value, gender_source_concept_id) VALUES (16, NULL, '8207899456', NULL, NULL, 13, NULL, NULL, '8207899456', NULL, NULL, NULL, NULL);
 INSERT INTO provider (provider_id, provider_name, npi, dea, specialty_concept_id, care_site_id, year_of_birth, gender_concept_id, provider_source_value, specialty_source_value, specialty_source_concept_id, gender_source_value, gender_source_concept_id) VALUES (689, NULL, '9979265126', NULL, NULL, 40, NULL, NULL, '9979265126', NULL, NULL, NULL, NULL);
@@ -1379,35 +1144,20 @@ INSERT INTO provider (provider_id, provider_name, npi, dea, specialty_concept_id
 INSERT INTO provider (provider_id, provider_name, npi, dea, specialty_concept_id, care_site_id, year_of_birth, gender_concept_id, provider_source_value, specialty_source_value, specialty_source_concept_id, gender_source_value, gender_source_concept_id) VALUES (435002, NULL, '6715807722', NULL, NULL, 1640, NULL, NULL, '6715807722', NULL, NULL, NULL, NULL);
 
 
---
--- Data for Name: relationship; Type: TABLE DATA; 
---
 
 INSERT INTO relationship (relationship_id, relationship_name, is_hierarchical, defines_ancestry, reverse_relationship_id, relationship_concept_id) VALUES ('Is a', 'Is a', '1', '0', 'Subsumes', 44818821);
 INSERT INTO relationship (relationship_id, relationship_name, is_hierarchical, defines_ancestry, reverse_relationship_id, relationship_concept_id) VALUES ('Subsumes', 'Subsumes', '1', '1', 'Is a', 44818723);
 
 
---
--- Data for Name: source_to_concept_map; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: specimen; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: visit_cost; Type: TABLE DATA; 
---
 
 
 
---
--- Data for Name: visit_occurrence; Type: TABLE DATA; 
---
 
 INSERT INTO visit_occurrence (visit_occurrence_id, person_id, visit_concept_id, visit_start_date, visit_start_time, visit_end_date, visit_end_time, visit_type_concept_id, provider_id, care_site_id, visit_source_value, visit_source_concept_id) VALUES (88179, 1780, 9201, '2008-04-09', NULL, '2008-04-13', NULL, 44818517, 5247, 3617, '196291177015950', NULL);
 INSERT INTO visit_occurrence (visit_occurrence_id, person_id, visit_concept_id, visit_start_date, visit_start_time, visit_end_date, visit_end_time, visit_type_concept_id, provider_id, care_site_id, visit_source_value, visit_source_concept_id) VALUES (88214, 1780, 0, '2008-11-22', NULL, '2008-11-22', NULL, 44818517, 12674, 8192, '887173388289786', NULL);
@@ -1438,9 +1188,6 @@ INSERT INTO visit_occurrence (visit_occurrence_id, person_id, visit_concept_id, 
 INSERT INTO visit_occurrence (visit_occurrence_id, person_id, visit_concept_id, visit_start_date, visit_start_time, visit_end_date, visit_end_time, visit_type_concept_id, provider_id, care_site_id, visit_source_value, visit_source_concept_id) VALUES (5314696, 110862, 0, '2010-06-07', NULL, '2010-06-07', NULL, 44818517, 192777, 9812, '887423388391758', NULL);
 
 
---
--- Data for Name: vocabulary; Type: TABLE DATA; 
---
 
 INSERT INTO vocabulary (vocabulary_id, vocabulary_name, vocabulary_reference, vocabulary_version, vocabulary_concept_id) VALUES ('CMS Place of Service', 'Place of Service Codes for Professional Claims (CMS)', 'http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/downloads//Website_POS_database.pdf', '2009-01-11', 44819110);
 INSERT INTO vocabulary (vocabulary_id, vocabulary_name, vocabulary_reference, vocabulary_version, vocabulary_concept_id) VALUES ('Cohort', 'Legacy OMOP HOI or DOI cohort', 'OMOP generated', NULL, 44819123);
@@ -1463,1890 +1210,1176 @@ INSERT INTO vocabulary (vocabulary_id, vocabulary_name, vocabulary_reference, vo
 INSERT INTO vocabulary (vocabulary_id, vocabulary_name, vocabulary_reference, vocabulary_version, vocabulary_concept_id) VALUES ('Vocabulary', 'OMOP Vocabulary', 'OMOP generated', NULL, 44819232);
 
 
---
--- Name: condition_era_sequence; Type: SEQUENCE SET; 
---
 
 SELECT pg_catalog.setval('condition_era_sequence', 1, false);
 
 
---
--- Name: drug_era_sequence; Type: SEQUENCE SET; 
---
 
 SELECT pg_catalog.setval('drug_era_sequence', 1, false);
 
 
---
--- Name: attribute_definition xpk_attribute_definition; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY attribute_definition
     ADD CONSTRAINT xpk_attribute_definition PRIMARY KEY (attribute_definition_id);
 
 
---
--- Name: care_site xpk_care_site; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY care_site
     ADD CONSTRAINT xpk_care_site PRIMARY KEY (care_site_id);
 
 
---
--- Name: cohort xpk_cohort; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY cohort
     ADD CONSTRAINT xpk_cohort PRIMARY KEY (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date);
 
 
---
--- Name: cohort_attribute xpk_cohort_attribute; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY cohort_attribute
     ADD CONSTRAINT xpk_cohort_attribute PRIMARY KEY (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date, attribute_definition_id);
 
 
---
--- Name: cohort_definition xpk_cohort_definition; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY cohort_definition
     ADD CONSTRAINT xpk_cohort_definition PRIMARY KEY (cohort_definition_id);
 
 
---
--- Name: concept xpk_concept; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept
     ADD CONSTRAINT xpk_concept PRIMARY KEY (concept_id);
 
 
---
--- Name: concept_ancestor xpk_concept_ancestor; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept_ancestor
     ADD CONSTRAINT xpk_concept_ancestor PRIMARY KEY (ancestor_concept_id, descendant_concept_id);
 
 
---
--- Name: concept_class xpk_concept_class; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept_class
     ADD CONSTRAINT xpk_concept_class PRIMARY KEY (concept_class_id);
 
 
---
--- Name: concept_relationship xpk_concept_relationship; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept_relationship
     ADD CONSTRAINT xpk_concept_relationship PRIMARY KEY (concept_id_1, concept_id_2, relationship_id);
 
 
---
--- Name: condition_era xpk_condition_era; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY condition_era
     ADD CONSTRAINT xpk_condition_era PRIMARY KEY (condition_era_id);
 
 
---
--- Name: condition_occurrence xpk_condition_occurrence; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY condition_occurrence
     ADD CONSTRAINT xpk_condition_occurrence PRIMARY KEY (condition_occurrence_id);
 
 
---
--- Name: death xpk_death; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY death
     ADD CONSTRAINT xpk_death PRIMARY KEY (person_id);
 
 
---
--- Name: device_cost xpk_device_cost; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY device_cost
     ADD CONSTRAINT xpk_device_cost PRIMARY KEY (device_cost_id);
 
 
---
--- Name: device_exposure xpk_device_exposure; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY device_exposure
     ADD CONSTRAINT xpk_device_exposure PRIMARY KEY (device_exposure_id);
 
 
---
--- Name: domain xpk_domain; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY domain
     ADD CONSTRAINT xpk_domain PRIMARY KEY (domain_id);
 
 
---
--- Name: dose_era xpk_dose_era; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY dose_era
     ADD CONSTRAINT xpk_dose_era PRIMARY KEY (dose_era_id);
 
 
---
--- Name: drug_cost xpk_drug_cost; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_cost
     ADD CONSTRAINT xpk_drug_cost PRIMARY KEY (drug_cost_id);
 
 
---
--- Name: drug_era xpk_drug_era; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_era
     ADD CONSTRAINT xpk_drug_era PRIMARY KEY (drug_era_id);
 
 
---
--- Name: drug_exposure xpk_drug_exposure; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_exposure
     ADD CONSTRAINT xpk_drug_exposure PRIMARY KEY (drug_exposure_id);
 
 
---
--- Name: drug_strength xpk_drug_strength; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_strength
     ADD CONSTRAINT xpk_drug_strength PRIMARY KEY (drug_concept_id, ingredient_concept_id);
 
 
---
--- Name: location xpk_location; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY location
     ADD CONSTRAINT xpk_location PRIMARY KEY (location_id);
 
 
---
--- Name: measurement xpk_measurement; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY measurement
     ADD CONSTRAINT xpk_measurement PRIMARY KEY (measurement_id);
 
 
---
--- Name: note xpk_note; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY note
     ADD CONSTRAINT xpk_note PRIMARY KEY (note_id);
 
 
---
--- Name: observation xpk_observation; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation
     ADD CONSTRAINT xpk_observation PRIMARY KEY (observation_id);
 
 
---
--- Name: observation_period xpk_observation_period; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation_period
     ADD CONSTRAINT xpk_observation_period PRIMARY KEY (observation_period_id);
 
 
---
--- Name: payer_plan_period xpk_payer_plan_period; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY payer_plan_period
     ADD CONSTRAINT xpk_payer_plan_period PRIMARY KEY (payer_plan_period_id);
 
 
---
--- Name: person xpk_person; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY person
     ADD CONSTRAINT xpk_person PRIMARY KEY (person_id);
 
 
---
--- Name: procedure_cost xpk_procedure_cost; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_cost
     ADD CONSTRAINT xpk_procedure_cost PRIMARY KEY (procedure_cost_id);
 
 
---
--- Name: procedure_occurrence xpk_procedure_occurrence; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_occurrence
     ADD CONSTRAINT xpk_procedure_occurrence PRIMARY KEY (procedure_occurrence_id);
 
 
---
--- Name: provider xpk_provider; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY provider
     ADD CONSTRAINT xpk_provider PRIMARY KEY (provider_id);
 
 
---
--- Name: relationship xpk_relationship; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY relationship
     ADD CONSTRAINT xpk_relationship PRIMARY KEY (relationship_id);
 
 
---
--- Name: source_to_concept_map xpk_source_to_concept_map; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY source_to_concept_map
     ADD CONSTRAINT xpk_source_to_concept_map PRIMARY KEY (source_vocabulary_id, target_concept_id, source_code, valid_end_date);
 
 
---
--- Name: specimen xpk_specimen; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY specimen
     ADD CONSTRAINT xpk_specimen PRIMARY KEY (specimen_id);
 
 
---
--- Name: visit_cost xpk_visit_cost; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY visit_cost
     ADD CONSTRAINT xpk_visit_cost PRIMARY KEY (visit_cost_id);
 
 
---
--- Name: visit_occurrence xpk_visit_occurrence; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY visit_occurrence
     ADD CONSTRAINT xpk_visit_occurrence PRIMARY KEY (visit_occurrence_id);
 
 
---
--- Name: vocabulary xpk_vocabulary; Type: CONSTRAINT; 
---
 
 ALTER TABLE ONLY vocabulary
     ADD CONSTRAINT xpk_vocabulary PRIMARY KEY (vocabulary_id);
 
 
---
--- Name: idx_attribute_definition_id; Type: INDEX; 
---
 
 CREATE INDEX idx_attribute_definition_id ON attribute_definition USING btree (attribute_definition_id);
 
 ALTER TABLE attribute_definition CLUSTER ON idx_attribute_definition_id;
 
 
---
--- Name: idx_ca_definition_id; Type: INDEX; 
---
 
 CREATE INDEX idx_ca_definition_id ON cohort_attribute USING btree (cohort_definition_id);
 
 
---
--- Name: idx_ca_subject_id; Type: INDEX; 
---
 
 CREATE INDEX idx_ca_subject_id ON cohort_attribute USING btree (subject_id);
 
 
---
--- Name: idx_cohort_c_definition_id; Type: INDEX; 
---
 
 CREATE INDEX idx_cohort_c_definition_id ON cohort USING btree (cohort_definition_id);
 
 
---
--- Name: idx_cohort_definition_id; Type: INDEX; 
---
 
 CREATE INDEX idx_cohort_definition_id ON cohort_definition USING btree (cohort_definition_id);
 
 ALTER TABLE cohort_definition CLUSTER ON idx_cohort_definition_id;
 
 
---
--- Name: idx_cohort_subject_id; Type: INDEX; 
---
 
 CREATE INDEX idx_cohort_subject_id ON cohort USING btree (subject_id);
 
 
---
--- Name: idx_concept_ancestor_id_1; Type: INDEX; 
---
 
 CREATE INDEX idx_concept_ancestor_id_1 ON concept_ancestor USING btree (ancestor_concept_id);
 
 ALTER TABLE concept_ancestor CLUSTER ON idx_concept_ancestor_id_1;
 
 
---
--- Name: idx_concept_ancestor_id_2; Type: INDEX; 
---
 
 CREATE INDEX idx_concept_ancestor_id_2 ON concept_ancestor USING btree (descendant_concept_id);
 
 
---
--- Name: idx_concept_class_class_id; Type: INDEX; 
---
 
 CREATE UNIQUE INDEX idx_concept_class_class_id ON concept_class USING btree (concept_class_id);
 
 ALTER TABLE concept_class CLUSTER ON idx_concept_class_class_id;
 
 
---
--- Name: idx_concept_class_id; Type: INDEX; 
---
 
 CREATE INDEX idx_concept_class_id ON concept USING btree (concept_class_id);
 
 
---
--- Name: idx_concept_code; Type: INDEX; 
---
 
 CREATE INDEX idx_concept_code ON concept USING btree (concept_code);
 
 
---
--- Name: idx_concept_concept_id; Type: INDEX; 
---
 
 CREATE UNIQUE INDEX idx_concept_concept_id ON concept USING btree (concept_id);
 
 ALTER TABLE concept CLUSTER ON idx_concept_concept_id;
 
 
---
--- Name: idx_concept_domain_id; Type: INDEX; 
---
 
 CREATE INDEX idx_concept_domain_id ON concept USING btree (domain_id);
 
 
---
--- Name: idx_concept_relationship_id_1; Type: INDEX; 
---
 
 CREATE INDEX idx_concept_relationship_id_1 ON concept_relationship USING btree (concept_id_1);
 
 
---
--- Name: idx_concept_relationship_id_2; Type: INDEX; 
---
 
 CREATE INDEX idx_concept_relationship_id_2 ON concept_relationship USING btree (concept_id_2);
 
 
---
--- Name: idx_concept_relationship_id_3; Type: INDEX; 
---
 
 CREATE INDEX idx_concept_relationship_id_3 ON concept_relationship USING btree (relationship_id);
 
 
---
--- Name: idx_concept_synonym_id; Type: INDEX; 
---
 
 CREATE INDEX idx_concept_synonym_id ON concept_synonym USING btree (concept_id);
 
 ALTER TABLE concept_synonym CLUSTER ON idx_concept_synonym_id;
 
 
---
--- Name: idx_concept_vocabluary_id; Type: INDEX; 
---
 
 CREATE INDEX idx_concept_vocabluary_id ON concept USING btree (vocabulary_id);
 
 
---
--- Name: idx_condition_concept_id; Type: INDEX; 
---
 
 CREATE INDEX idx_condition_concept_id ON condition_occurrence USING btree (condition_concept_id);
 
 
---
--- Name: idx_condition_era_concept_id; Type: INDEX; 
---
 
 CREATE INDEX idx_condition_era_concept_id ON condition_era USING btree (condition_concept_id);
 
 
---
--- Name: idx_condition_era_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_condition_era_person_id ON condition_era USING btree (person_id);
 
 ALTER TABLE condition_era CLUSTER ON idx_condition_era_person_id;
 
 
---
--- Name: idx_condition_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_condition_person_id ON condition_occurrence USING btree (person_id);
 
 ALTER TABLE condition_occurrence CLUSTER ON idx_condition_person_id;
 
 
---
--- Name: idx_condition_visit_id; Type: INDEX; 
---
 
 CREATE INDEX idx_condition_visit_id ON condition_occurrence USING btree (visit_occurrence_id);
 
 
---
--- Name: idx_death_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_death_person_id ON death USING btree (person_id);
 
 ALTER TABLE death CLUSTER ON idx_death_person_id;
 
 
---
--- Name: idx_device_concept_id; Type: INDEX; 
---
 
 CREATE INDEX idx_device_concept_id ON device_exposure USING btree (device_concept_id);
 
 
---
--- Name: idx_device_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_device_person_id ON device_exposure USING btree (person_id);
 
 ALTER TABLE device_exposure CLUSTER ON idx_device_person_id;
 
 
---
--- Name: idx_device_visit_id; Type: INDEX; 
---
 
 CREATE INDEX idx_device_visit_id ON device_exposure USING btree (visit_occurrence_id);
 
 
---
--- Name: idx_domain_domain_id; Type: INDEX; 
---
 
 CREATE UNIQUE INDEX idx_domain_domain_id ON domain USING btree (domain_id);
 
 ALTER TABLE domain CLUSTER ON idx_domain_domain_id;
 
 
---
--- Name: idx_dose_era_concept_id; Type: INDEX; 
---
 
 CREATE INDEX idx_dose_era_concept_id ON dose_era USING btree (drug_concept_id);
 
 
---
--- Name: idx_dose_era_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_dose_era_person_id ON dose_era USING btree (person_id);
 
 ALTER TABLE dose_era CLUSTER ON idx_dose_era_person_id;
 
 
---
--- Name: idx_drug_concept_id; Type: INDEX; 
---
 
 CREATE INDEX idx_drug_concept_id ON drug_exposure USING btree (drug_concept_id);
 
 
---
--- Name: idx_drug_era_concept_id; Type: INDEX; 
---
 
 CREATE INDEX idx_drug_era_concept_id ON drug_era USING btree (drug_concept_id);
 
 
---
--- Name: idx_drug_era_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_drug_era_person_id ON drug_era USING btree (person_id);
 
 ALTER TABLE drug_era CLUSTER ON idx_drug_era_person_id;
 
 
---
--- Name: idx_drug_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_drug_person_id ON drug_exposure USING btree (person_id);
 
 ALTER TABLE drug_exposure CLUSTER ON idx_drug_person_id;
 
 
---
--- Name: idx_drug_strength_id_1; Type: INDEX; 
---
 
 CREATE INDEX idx_drug_strength_id_1 ON drug_strength USING btree (drug_concept_id);
 
 ALTER TABLE drug_strength CLUSTER ON idx_drug_strength_id_1;
 
 
---
--- Name: idx_drug_strength_id_2; Type: INDEX; 
---
 
 CREATE INDEX idx_drug_strength_id_2 ON drug_strength USING btree (ingredient_concept_id);
 
 
---
--- Name: idx_drug_visit_id; Type: INDEX; 
---
 
 CREATE INDEX idx_drug_visit_id ON drug_exposure USING btree (visit_occurrence_id);
 
 
---
--- Name: idx_fact_relationship_id_1; Type: INDEX; 
---
 
 CREATE INDEX idx_fact_relationship_id_1 ON fact_relationship USING btree (domain_concept_id_1);
 
 
---
--- Name: idx_fact_relationship_id_2; Type: INDEX; 
---
 
 CREATE INDEX idx_fact_relationship_id_2 ON fact_relationship USING btree (domain_concept_id_2);
 
 
---
--- Name: idx_fact_relationship_id_3; Type: INDEX; 
---
 
 CREATE INDEX idx_fact_relationship_id_3 ON fact_relationship USING btree (relationship_concept_id);
 
 
---
--- Name: idx_measurement_concept_id; Type: INDEX; 
---
 
 CREATE INDEX idx_measurement_concept_id ON measurement USING btree (measurement_concept_id);
 
 
---
--- Name: idx_measurement_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_measurement_person_id ON measurement USING btree (person_id);
 
 ALTER TABLE measurement CLUSTER ON idx_measurement_person_id;
 
 
---
--- Name: idx_measurement_visit_id; Type: INDEX; 
---
 
 CREATE INDEX idx_measurement_visit_id ON measurement USING btree (visit_occurrence_id);
 
 
---
--- Name: idx_note_concept_id; Type: INDEX; 
---
 
 CREATE INDEX idx_note_concept_id ON note USING btree (note_type_concept_id);
 
 
---
--- Name: idx_note_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_note_person_id ON note USING btree (person_id);
 
 ALTER TABLE note CLUSTER ON idx_note_person_id;
 
 
---
--- Name: idx_note_visit_id; Type: INDEX; 
---
 
 CREATE INDEX idx_note_visit_id ON note USING btree (visit_occurrence_id);
 
 
---
--- Name: idx_observation_concept_id; Type: INDEX; 
---
 
 CREATE INDEX idx_observation_concept_id ON observation USING btree (observation_concept_id);
 
 
---
--- Name: idx_observation_period_id; Type: INDEX; 
---
 
 CREATE INDEX idx_observation_period_id ON observation_period USING btree (person_id);
 
 ALTER TABLE observation_period CLUSTER ON idx_observation_period_id;
 
 
---
--- Name: idx_observation_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_observation_person_id ON observation USING btree (person_id);
 
 ALTER TABLE observation CLUSTER ON idx_observation_person_id;
 
 
---
--- Name: idx_observation_visit_id; Type: INDEX; 
---
 
 CREATE INDEX idx_observation_visit_id ON observation USING btree (visit_occurrence_id);
 
 
---
--- Name: idx_period_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_period_person_id ON payer_plan_period USING btree (person_id);
 
 ALTER TABLE payer_plan_period CLUSTER ON idx_period_person_id;
 
 
---
--- Name: idx_person_id; Type: INDEX; 
---
 
 CREATE UNIQUE INDEX idx_person_id ON person USING btree (person_id);
 
 ALTER TABLE person CLUSTER ON idx_person_id;
 
 
---
--- Name: idx_procedure_concept_id; Type: INDEX; 
---
 
 CREATE INDEX idx_procedure_concept_id ON procedure_occurrence USING btree (procedure_concept_id);
 
 
---
--- Name: idx_procedure_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_procedure_person_id ON procedure_occurrence USING btree (person_id);
 
 ALTER TABLE procedure_occurrence CLUSTER ON idx_procedure_person_id;
 
 
---
--- Name: idx_procedure_visit_id; Type: INDEX; 
---
 
 CREATE INDEX idx_procedure_visit_id ON procedure_occurrence USING btree (visit_occurrence_id);
 
 
---
--- Name: idx_relationship_rel_id; Type: INDEX; 
---
 
 CREATE UNIQUE INDEX idx_relationship_rel_id ON relationship USING btree (relationship_id);
 
 ALTER TABLE relationship CLUSTER ON idx_relationship_rel_id;
 
 
---
--- Name: idx_source_to_concept_map_code; Type: INDEX; 
---
 
 CREATE INDEX idx_source_to_concept_map_code ON source_to_concept_map USING btree (source_code);
 
 
---
--- Name: idx_source_to_concept_map_id_1; Type: INDEX; 
---
 
 CREATE INDEX idx_source_to_concept_map_id_1 ON source_to_concept_map USING btree (source_vocabulary_id);
 
 
---
--- Name: idx_source_to_concept_map_id_2; Type: INDEX; 
---
 
 CREATE INDEX idx_source_to_concept_map_id_2 ON source_to_concept_map USING btree (target_vocabulary_id);
 
 
---
--- Name: idx_source_to_concept_map_id_3; Type: INDEX; 
---
 
 CREATE INDEX idx_source_to_concept_map_id_3 ON source_to_concept_map USING btree (target_concept_id);
 
 ALTER TABLE source_to_concept_map CLUSTER ON idx_source_to_concept_map_id_3;
 
 
---
--- Name: idx_specimen_concept_id; Type: INDEX; 
---
 
 CREATE INDEX idx_specimen_concept_id ON specimen USING btree (specimen_concept_id);
 
 
---
--- Name: idx_specimen_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_specimen_person_id ON specimen USING btree (person_id);
 
 ALTER TABLE specimen CLUSTER ON idx_specimen_person_id;
 
 
---
--- Name: idx_visit_concept_id; Type: INDEX; 
---
 
 CREATE INDEX idx_visit_concept_id ON visit_occurrence USING btree (visit_concept_id);
 
 
---
--- Name: idx_visit_person_id; Type: INDEX; 
---
 
 CREATE INDEX idx_visit_person_id ON visit_occurrence USING btree (person_id);
 
 ALTER TABLE visit_occurrence CLUSTER ON idx_visit_person_id;
 
 
---
--- Name: idx_vocabulary_vocabulary_id; Type: INDEX; 
---
 
 CREATE UNIQUE INDEX idx_vocabulary_vocabulary_id ON vocabulary USING btree (vocabulary_id);
 
 ALTER TABLE vocabulary CLUSTER ON idx_vocabulary_vocabulary_id;
 
 
---
--- Name: cohort_attribute fpk_ca_attribute_definition; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY cohort_attribute
     ADD CONSTRAINT fpk_ca_attribute_definition FOREIGN KEY (attribute_definition_id) REFERENCES attribute_definition(attribute_definition_id);
 
 
---
--- Name: cohort_attribute fpk_ca_cohort_definition; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY cohort_attribute
     ADD CONSTRAINT fpk_ca_cohort_definition FOREIGN KEY (cohort_definition_id) REFERENCES cohort_definition(cohort_definition_id);
 
 
---
--- Name: cohort_attribute fpk_ca_value; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY cohort_attribute
     ADD CONSTRAINT fpk_ca_value FOREIGN KEY (value_as_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: care_site fpk_care_site_location; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY care_site
     ADD CONSTRAINT fpk_care_site_location FOREIGN KEY (location_id) REFERENCES location(location_id);
 
 
---
--- Name: care_site fpk_care_site_place; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY care_site
     ADD CONSTRAINT fpk_care_site_place FOREIGN KEY (place_of_service_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: cohort fpk_cohort_definition; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY cohort
     ADD CONSTRAINT fpk_cohort_definition FOREIGN KEY (cohort_definition_id) REFERENCES cohort_definition(cohort_definition_id);
 
 
---
--- Name: cohort_definition fpk_cohort_definition_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY cohort_definition
     ADD CONSTRAINT fpk_cohort_definition_concept FOREIGN KEY (definition_type_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: concept_ancestor fpk_concept_ancestor_concept_1; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept_ancestor
     ADD CONSTRAINT fpk_concept_ancestor_concept_1 FOREIGN KEY (ancestor_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: concept_ancestor fpk_concept_ancestor_concept_2; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept_ancestor
     ADD CONSTRAINT fpk_concept_ancestor_concept_2 FOREIGN KEY (descendant_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: concept fpk_concept_class; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept
     ADD CONSTRAINT fpk_concept_class FOREIGN KEY (concept_class_id) REFERENCES concept_class(concept_class_id);
 
 
---
--- Name: concept_class fpk_concept_class_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept_class
     ADD CONSTRAINT fpk_concept_class_concept FOREIGN KEY (concept_class_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: concept fpk_concept_domain; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept
     ADD CONSTRAINT fpk_concept_domain FOREIGN KEY (domain_id) REFERENCES domain(domain_id);
 
 
---
--- Name: concept_relationship fpk_concept_relationship_c_1; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept_relationship
     ADD CONSTRAINT fpk_concept_relationship_c_1 FOREIGN KEY (concept_id_1) REFERENCES concept(concept_id);
 
 
---
--- Name: concept_relationship fpk_concept_relationship_c_2; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept_relationship
     ADD CONSTRAINT fpk_concept_relationship_c_2 FOREIGN KEY (concept_id_2) REFERENCES concept(concept_id);
 
 
---
--- Name: concept_relationship fpk_concept_relationship_id; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept_relationship
     ADD CONSTRAINT fpk_concept_relationship_id FOREIGN KEY (relationship_id) REFERENCES relationship(relationship_id);
 
 
---
--- Name: concept_synonym fpk_concept_synonym_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept_synonym
     ADD CONSTRAINT fpk_concept_synonym_concept FOREIGN KEY (concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: concept fpk_concept_vocabulary; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY concept
     ADD CONSTRAINT fpk_concept_vocabulary FOREIGN KEY (vocabulary_id) REFERENCES vocabulary(vocabulary_id);
 
 
---
--- Name: condition_occurrence fpk_condition_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY condition_occurrence
     ADD CONSTRAINT fpk_condition_concept FOREIGN KEY (condition_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: condition_occurrence fpk_condition_concept_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY condition_occurrence
     ADD CONSTRAINT fpk_condition_concept_s FOREIGN KEY (condition_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: condition_era fpk_condition_era_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY condition_era
     ADD CONSTRAINT fpk_condition_era_concept FOREIGN KEY (condition_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: condition_era fpk_condition_era_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY condition_era
     ADD CONSTRAINT fpk_condition_era_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: condition_occurrence fpk_condition_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY condition_occurrence
     ADD CONSTRAINT fpk_condition_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: condition_occurrence fpk_condition_provider; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY condition_occurrence
     ADD CONSTRAINT fpk_condition_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id);
 
 
---
--- Name: condition_occurrence fpk_condition_type_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY condition_occurrence
     ADD CONSTRAINT fpk_condition_type_concept FOREIGN KEY (condition_type_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: condition_occurrence fpk_condition_visit; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY condition_occurrence
     ADD CONSTRAINT fpk_condition_visit FOREIGN KEY (visit_occurrence_id) REFERENCES visit_occurrence(visit_occurrence_id);
 
 
---
--- Name: death fpk_death_cause_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY death
     ADD CONSTRAINT fpk_death_cause_concept FOREIGN KEY (cause_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: death fpk_death_cause_concept_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY death
     ADD CONSTRAINT fpk_death_cause_concept_s FOREIGN KEY (cause_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: death fpk_death_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY death
     ADD CONSTRAINT fpk_death_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: death fpk_death_type_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY death
     ADD CONSTRAINT fpk_death_type_concept FOREIGN KEY (death_type_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: device_exposure fpk_device_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY device_exposure
     ADD CONSTRAINT fpk_device_concept FOREIGN KEY (device_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: device_exposure fpk_device_concept_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY device_exposure
     ADD CONSTRAINT fpk_device_concept_s FOREIGN KEY (device_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: device_cost fpk_device_cost_currency; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY device_cost
     ADD CONSTRAINT fpk_device_cost_currency FOREIGN KEY (currency_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: device_cost fpk_device_cost_id; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY device_cost
     ADD CONSTRAINT fpk_device_cost_id FOREIGN KEY (device_exposure_id) REFERENCES device_exposure(device_exposure_id);
 
 
---
--- Name: device_cost fpk_device_cost_period; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY device_cost
     ADD CONSTRAINT fpk_device_cost_period FOREIGN KEY (payer_plan_period_id) REFERENCES payer_plan_period(payer_plan_period_id);
 
 
---
--- Name: device_exposure fpk_device_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY device_exposure
     ADD CONSTRAINT fpk_device_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: device_exposure fpk_device_provider; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY device_exposure
     ADD CONSTRAINT fpk_device_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id);
 
 
---
--- Name: device_exposure fpk_device_type_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY device_exposure
     ADD CONSTRAINT fpk_device_type_concept FOREIGN KEY (device_type_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: device_exposure fpk_device_visit; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY device_exposure
     ADD CONSTRAINT fpk_device_visit FOREIGN KEY (visit_occurrence_id) REFERENCES visit_occurrence(visit_occurrence_id);
 
 
---
--- Name: domain fpk_domain_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY domain
     ADD CONSTRAINT fpk_domain_concept FOREIGN KEY (domain_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: dose_era fpk_dose_era_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY dose_era
     ADD CONSTRAINT fpk_dose_era_concept FOREIGN KEY (drug_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: dose_era fpk_dose_era_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY dose_era
     ADD CONSTRAINT fpk_dose_era_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: dose_era fpk_dose_era_unit_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY dose_era
     ADD CONSTRAINT fpk_dose_era_unit_concept FOREIGN KEY (unit_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_exposure fpk_drug_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_exposure
     ADD CONSTRAINT fpk_drug_concept FOREIGN KEY (drug_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_exposure fpk_drug_concept_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_exposure
     ADD CONSTRAINT fpk_drug_concept_s FOREIGN KEY (drug_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_cost fpk_drug_cost_currency; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_cost
     ADD CONSTRAINT fpk_drug_cost_currency FOREIGN KEY (currency_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_cost fpk_drug_cost_id; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_cost
     ADD CONSTRAINT fpk_drug_cost_id FOREIGN KEY (drug_exposure_id) REFERENCES drug_exposure(drug_exposure_id);
 
 
---
--- Name: drug_cost fpk_drug_cost_period; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_cost
     ADD CONSTRAINT fpk_drug_cost_period FOREIGN KEY (payer_plan_period_id) REFERENCES payer_plan_period(payer_plan_period_id);
 
 
---
--- Name: drug_exposure fpk_drug_dose_unit_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_exposure
     ADD CONSTRAINT fpk_drug_dose_unit_concept FOREIGN KEY (dose_unit_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_era fpk_drug_era_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_era
     ADD CONSTRAINT fpk_drug_era_concept FOREIGN KEY (drug_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_era fpk_drug_era_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_era
     ADD CONSTRAINT fpk_drug_era_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: drug_exposure fpk_drug_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_exposure
     ADD CONSTRAINT fpk_drug_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: drug_exposure fpk_drug_provider; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_exposure
     ADD CONSTRAINT fpk_drug_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id);
 
 
---
--- Name: drug_exposure fpk_drug_route_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_exposure
     ADD CONSTRAINT fpk_drug_route_concept FOREIGN KEY (route_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_strength fpk_drug_strength_concept_1; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_strength
     ADD CONSTRAINT fpk_drug_strength_concept_1 FOREIGN KEY (drug_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_strength fpk_drug_strength_concept_2; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_strength
     ADD CONSTRAINT fpk_drug_strength_concept_2 FOREIGN KEY (ingredient_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_strength fpk_drug_strength_unit_1; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_strength
     ADD CONSTRAINT fpk_drug_strength_unit_1 FOREIGN KEY (amount_unit_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_strength fpk_drug_strength_unit_2; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_strength
     ADD CONSTRAINT fpk_drug_strength_unit_2 FOREIGN KEY (numerator_unit_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_strength fpk_drug_strength_unit_3; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_strength
     ADD CONSTRAINT fpk_drug_strength_unit_3 FOREIGN KEY (denominator_unit_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_exposure fpk_drug_type_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_exposure
     ADD CONSTRAINT fpk_drug_type_concept FOREIGN KEY (drug_type_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: drug_exposure fpk_drug_visit; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY drug_exposure
     ADD CONSTRAINT fpk_drug_visit FOREIGN KEY (visit_occurrence_id) REFERENCES visit_occurrence(visit_occurrence_id);
 
 
---
--- Name: fact_relationship fpk_fact_domain_1; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY fact_relationship
     ADD CONSTRAINT fpk_fact_domain_1 FOREIGN KEY (domain_concept_id_1) REFERENCES concept(concept_id);
 
 
---
--- Name: fact_relationship fpk_fact_domain_2; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY fact_relationship
     ADD CONSTRAINT fpk_fact_domain_2 FOREIGN KEY (domain_concept_id_2) REFERENCES concept(concept_id);
 
 
---
--- Name: fact_relationship fpk_fact_relationship; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY fact_relationship
     ADD CONSTRAINT fpk_fact_relationship FOREIGN KEY (relationship_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: measurement fpk_measurement_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY measurement
     ADD CONSTRAINT fpk_measurement_concept FOREIGN KEY (measurement_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: measurement fpk_measurement_concept_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY measurement
     ADD CONSTRAINT fpk_measurement_concept_s FOREIGN KEY (measurement_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: measurement fpk_measurement_operator; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY measurement
     ADD CONSTRAINT fpk_measurement_operator FOREIGN KEY (operator_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: measurement fpk_measurement_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY measurement
     ADD CONSTRAINT fpk_measurement_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: measurement fpk_measurement_provider; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY measurement
     ADD CONSTRAINT fpk_measurement_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id);
 
 
---
--- Name: measurement fpk_measurement_type_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY measurement
     ADD CONSTRAINT fpk_measurement_type_concept FOREIGN KEY (measurement_type_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: measurement fpk_measurement_unit; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY measurement
     ADD CONSTRAINT fpk_measurement_unit FOREIGN KEY (unit_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: measurement fpk_measurement_value; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY measurement
     ADD CONSTRAINT fpk_measurement_value FOREIGN KEY (value_as_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: measurement fpk_measurement_visit; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY measurement
     ADD CONSTRAINT fpk_measurement_visit FOREIGN KEY (visit_occurrence_id) REFERENCES visit_occurrence(visit_occurrence_id);
 
 
---
--- Name: note fpk_note_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY note
     ADD CONSTRAINT fpk_note_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: note fpk_note_provider; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY note
     ADD CONSTRAINT fpk_note_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id);
 
 
---
--- Name: note fpk_note_type_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY note
     ADD CONSTRAINT fpk_note_type_concept FOREIGN KEY (note_type_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: note fpk_note_visit; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY note
     ADD CONSTRAINT fpk_note_visit FOREIGN KEY (visit_occurrence_id) REFERENCES visit_occurrence(visit_occurrence_id);
 
 
---
--- Name: observation fpk_observation_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation
     ADD CONSTRAINT fpk_observation_concept FOREIGN KEY (observation_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: observation fpk_observation_concept_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation
     ADD CONSTRAINT fpk_observation_concept_s FOREIGN KEY (observation_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: observation_period fpk_observation_period_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation_period
     ADD CONSTRAINT fpk_observation_period_concept FOREIGN KEY (period_type_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: observation_period fpk_observation_period_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation_period
     ADD CONSTRAINT fpk_observation_period_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: observation fpk_observation_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation
     ADD CONSTRAINT fpk_observation_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: observation fpk_observation_provider; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation
     ADD CONSTRAINT fpk_observation_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id);
 
 
---
--- Name: observation fpk_observation_qualifier; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation
     ADD CONSTRAINT fpk_observation_qualifier FOREIGN KEY (qualifier_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: observation fpk_observation_type_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation
     ADD CONSTRAINT fpk_observation_type_concept FOREIGN KEY (observation_type_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: observation fpk_observation_unit; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation
     ADD CONSTRAINT fpk_observation_unit FOREIGN KEY (unit_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: observation fpk_observation_value; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation
     ADD CONSTRAINT fpk_observation_value FOREIGN KEY (value_as_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: observation fpk_observation_visit; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY observation
     ADD CONSTRAINT fpk_observation_visit FOREIGN KEY (visit_occurrence_id) REFERENCES visit_occurrence(visit_occurrence_id);
 
 
---
--- Name: payer_plan_period fpk_payer_plan_period; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY payer_plan_period
     ADD CONSTRAINT fpk_payer_plan_period FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: person fpk_person_care_site; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY person
     ADD CONSTRAINT fpk_person_care_site FOREIGN KEY (care_site_id) REFERENCES care_site(care_site_id);
 
 
---
--- Name: person fpk_person_ethnicity_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY person
     ADD CONSTRAINT fpk_person_ethnicity_concept FOREIGN KEY (ethnicity_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: person fpk_person_ethnicity_concept_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY person
     ADD CONSTRAINT fpk_person_ethnicity_concept_s FOREIGN KEY (ethnicity_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: person fpk_person_gender_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY person
     ADD CONSTRAINT fpk_person_gender_concept FOREIGN KEY (gender_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: person fpk_person_gender_concept_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY person
     ADD CONSTRAINT fpk_person_gender_concept_s FOREIGN KEY (gender_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: person fpk_person_location; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY person
     ADD CONSTRAINT fpk_person_location FOREIGN KEY (location_id) REFERENCES location(location_id);
 
 
---
--- Name: person fpk_person_provider; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY person
     ADD CONSTRAINT fpk_person_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id);
 
 
---
--- Name: person fpk_person_race_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY person
     ADD CONSTRAINT fpk_person_race_concept FOREIGN KEY (race_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: person fpk_person_race_concept_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY person
     ADD CONSTRAINT fpk_person_race_concept_s FOREIGN KEY (race_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: procedure_occurrence fpk_procedure_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_occurrence
     ADD CONSTRAINT fpk_procedure_concept FOREIGN KEY (procedure_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: procedure_occurrence fpk_procedure_concept_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_occurrence
     ADD CONSTRAINT fpk_procedure_concept_s FOREIGN KEY (procedure_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: procedure_cost fpk_procedure_cost_currency; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_cost
     ADD CONSTRAINT fpk_procedure_cost_currency FOREIGN KEY (currency_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: procedure_cost fpk_procedure_cost_id; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_cost
     ADD CONSTRAINT fpk_procedure_cost_id FOREIGN KEY (procedure_occurrence_id) REFERENCES procedure_occurrence(procedure_occurrence_id);
 
 
---
--- Name: procedure_cost fpk_procedure_cost_period; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_cost
     ADD CONSTRAINT fpk_procedure_cost_period FOREIGN KEY (payer_plan_period_id) REFERENCES payer_plan_period(payer_plan_period_id);
 
 
---
--- Name: procedure_cost fpk_procedure_cost_revenue; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_cost
     ADD CONSTRAINT fpk_procedure_cost_revenue FOREIGN KEY (revenue_code_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: procedure_occurrence fpk_procedure_modifier; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_occurrence
     ADD CONSTRAINT fpk_procedure_modifier FOREIGN KEY (modifier_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: procedure_occurrence fpk_procedure_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_occurrence
     ADD CONSTRAINT fpk_procedure_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: procedure_occurrence fpk_procedure_provider; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_occurrence
     ADD CONSTRAINT fpk_procedure_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id);
 
 
---
--- Name: procedure_occurrence fpk_procedure_type_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_occurrence
     ADD CONSTRAINT fpk_procedure_type_concept FOREIGN KEY (procedure_type_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: procedure_occurrence fpk_procedure_visit; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY procedure_occurrence
     ADD CONSTRAINT fpk_procedure_visit FOREIGN KEY (visit_occurrence_id) REFERENCES visit_occurrence(visit_occurrence_id);
 
 
---
--- Name: provider fpk_provider_care_site; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY provider
     ADD CONSTRAINT fpk_provider_care_site FOREIGN KEY (care_site_id) REFERENCES care_site(care_site_id);
 
 
---
--- Name: provider fpk_provider_gender; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY provider
     ADD CONSTRAINT fpk_provider_gender FOREIGN KEY (gender_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: provider fpk_provider_gender_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY provider
     ADD CONSTRAINT fpk_provider_gender_s FOREIGN KEY (gender_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: provider fpk_provider_specialty; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY provider
     ADD CONSTRAINT fpk_provider_specialty FOREIGN KEY (specialty_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: provider fpk_provider_specialty_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY provider
     ADD CONSTRAINT fpk_provider_specialty_s FOREIGN KEY (specialty_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: relationship fpk_relationship_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY relationship
     ADD CONSTRAINT fpk_relationship_concept FOREIGN KEY (relationship_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: relationship fpk_relationship_reverse; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY relationship
     ADD CONSTRAINT fpk_relationship_reverse FOREIGN KEY (reverse_relationship_id) REFERENCES relationship(relationship_id);
 
 
---
--- Name: source_to_concept_map fpk_source_to_concept_map_c_1; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY source_to_concept_map
     ADD CONSTRAINT fpk_source_to_concept_map_c_1 FOREIGN KEY (target_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: source_to_concept_map fpk_source_to_concept_map_v_1; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY source_to_concept_map
     ADD CONSTRAINT fpk_source_to_concept_map_v_1 FOREIGN KEY (source_vocabulary_id) REFERENCES vocabulary(vocabulary_id);
 
 
---
--- Name: source_to_concept_map fpk_source_to_concept_map_v_2; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY source_to_concept_map
     ADD CONSTRAINT fpk_source_to_concept_map_v_2 FOREIGN KEY (target_vocabulary_id) REFERENCES vocabulary(vocabulary_id);
 
 
---
--- Name: specimen fpk_specimen_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY specimen
     ADD CONSTRAINT fpk_specimen_concept FOREIGN KEY (specimen_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: specimen fpk_specimen_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY specimen
     ADD CONSTRAINT fpk_specimen_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: specimen fpk_specimen_site_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY specimen
     ADD CONSTRAINT fpk_specimen_site_concept FOREIGN KEY (anatomic_site_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: specimen fpk_specimen_status_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY specimen
     ADD CONSTRAINT fpk_specimen_status_concept FOREIGN KEY (disease_status_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: specimen fpk_specimen_type_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY specimen
     ADD CONSTRAINT fpk_specimen_type_concept FOREIGN KEY (specimen_type_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: specimen fpk_specimen_unit_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY specimen
     ADD CONSTRAINT fpk_specimen_unit_concept FOREIGN KEY (unit_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: visit_occurrence fpk_visit_care_site; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY visit_occurrence
     ADD CONSTRAINT fpk_visit_care_site FOREIGN KEY (care_site_id) REFERENCES care_site(care_site_id);
 
 
---
--- Name: visit_occurrence fpk_visit_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY visit_occurrence
     ADD CONSTRAINT fpk_visit_concept FOREIGN KEY (visit_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: visit_occurrence fpk_visit_concept_s; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY visit_occurrence
     ADD CONSTRAINT fpk_visit_concept_s FOREIGN KEY (visit_source_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: visit_cost fpk_visit_cost_currency; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY visit_cost
     ADD CONSTRAINT fpk_visit_cost_currency FOREIGN KEY (currency_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: visit_cost fpk_visit_cost_id; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY visit_cost
     ADD CONSTRAINT fpk_visit_cost_id FOREIGN KEY (visit_occurrence_id) REFERENCES visit_occurrence(visit_occurrence_id);
 
 
---
--- Name: visit_cost fpk_visit_cost_period; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY visit_cost
     ADD CONSTRAINT fpk_visit_cost_period FOREIGN KEY (payer_plan_period_id) REFERENCES payer_plan_period(payer_plan_period_id);
 
 
---
--- Name: visit_occurrence fpk_visit_person; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY visit_occurrence
     ADD CONSTRAINT fpk_visit_person FOREIGN KEY (person_id) REFERENCES person(person_id);
 
 
---
--- Name: visit_occurrence fpk_visit_provider; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY visit_occurrence
     ADD CONSTRAINT fpk_visit_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id);
 
 
---
--- Name: visit_occurrence fpk_visit_type_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY visit_occurrence
     ADD CONSTRAINT fpk_visit_type_concept FOREIGN KEY (visit_type_concept_id) REFERENCES concept(concept_id);
 
 
---
--- Name: vocabulary fpk_vocabulary_concept; Type: FK CONSTRAINT; 
---
 
 ALTER TABLE ONLY vocabulary
     ADD CONSTRAINT fpk_vocabulary_concept FOREIGN KEY (vocabulary_concept_id) REFERENCES concept(concept_id);
 
 
---
--- PostgreSQL database dump complete
---
 
