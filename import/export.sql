@@ -16,24 +16,24 @@ CREATE TEMPORARY TABLE condition_concepts AS
     SELECT descendant_concept_id AS id
       FROM concept_ancestor
      WHERE ancestor_concept_id IN (4329847, 316866);
-CREATE TEMPORARY TABLE conditions AS
-    SELECT * from condition_occurrence
-     WHERE person_id IN (107680, 95538, 1780, 110862, 69985, 30091, 
-                         72120, 37455, 42383, 82328 )
-       AND condition_concept_id IN (SELECT id from condition_concepts);
 CREATE TEMPORARY TABLE persons AS
     SELECT * FROM person
-      WHERE person_id IN (SELECT person_id FROM conditions);
+     WHERE person_id IN (107680, 95538, 1780, 110862, 69985, 30091,
+                         72120, 37455, 42383, 82328 );
+CREATE TEMPORARY TABLE conditions AS
+    SELECT * from condition_occurrence
+     WHERE person_id IN (SELECT person_id from persons)
+       AND condition_concept_id IN (SELECT id from condition_concepts);
 CREATE TEMPORARY TABLE nearby_visits AS
     SELECT * FROM visit_occurrence O
-      WHERE O.person_id IN (SELECT person_id FROM conditions)
+      WHERE O.person_id IN (SELECT person_id FROM persons)
         AND O.visit_concept_id IN (SELECT id from visit_concepts)
         AND EXISTS (
                SELECT 'X'
                  FROM conditions C
-                WHERE C.person_id IN (SELECT person_id FROM conditions)
+                WHERE C.person_id = O.person_id
                   AND C.condition_start_date >= O.visit_start_date
-                  AND COALESCE(C.condition_end_date, 
+                  AND COALESCE(C.condition_end_date,
                           C.condition_start_date + 0*INTERVAL'1 day')
                       <= O.visit_end_date);
 CREATE TEMPORARY TABLE visits AS (
@@ -63,8 +63,7 @@ CREATE TEMPORARY TABLE locations AS
         (SELECT location_id FROM persons));
 CREATE TEMPORARY TABLE periods AS
     SELECT * FROM observation_period
-     WHERE person_id IN (
-        SELECT person_id from persons);
+     WHERE person_id IN (SELECT person_id from persons);
 
 \copy (select * from conditions order by condition_occurrence_id) TO 'condition_occurrence.csv'  WITH CSV HEADER;
 \copy (SELECT * FROM visits order by visit_occurrence_id) TO 'visit_occurrence.csv'  WITH CSV HEADER;
