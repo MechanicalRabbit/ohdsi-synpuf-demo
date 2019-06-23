@@ -32,6 +32,10 @@ CREATE TEMPORARY TABLE exposures AS
     SELECT * from drug_exposure
      WHERE person_id IN (SELECT person_id from persons)
        AND drug_concept_id IN (SELECT id from drug_concepts);
+CREATE TEMPORARY TABLE eras AS
+    SELECT * from drug_era
+     WHERE person_id IN (SELECT person_id from persons)
+       AND drug_concept_id IN (SELECT id from drug_concepts);
 CREATE TEMPORARY TABLE nearby_visits AS
     SELECT * FROM visit_occurrence O
       WHERE O.person_id IN (SELECT person_id FROM persons)
@@ -81,6 +85,7 @@ CREATE TEMPORARY TABLE periods AS
 \copy (SELECT * FROM locations order by location_id) TO 'location.csv' WITH CSV HEADER;
 \copy (SELECT * FROM periods order by observation_period_id) TO 'observation_period.csv'  WITH CSV HEADER;
 \copy (SELECT * FROM exposures order by drug_exposure_id) TO 'drug_exposure.csv'  WITH CSV HEADER;
+\copy (SELECT * FROM eras order by drug_era_id) TO 'drug_era.csv'  WITH CSV HEADER;
 
 ----
 \copy (SELECT * FROM concept_ancestor WHERE descendant_concept_id in (SELECT id FROM concepts) AND ancestor_concept_id in (SELECT id from concepts) AND descendant_concept_id != ancestor_concept_id ORDER BY ancestor_concept_id, descendant_concept_id) TO 'concept_ancestor.csv' WITH CSV HEADER;
