@@ -8,20 +8,38 @@ CREATE TEMPORARY TABLE concepts (id INTEGER);
 \copy (SELECT * FROM domain WHERE domain_id in ('Metadata','Condition','Gender','Race','Ethnicity','Visit','Type Concept') ORDER BY domain_id) TO 'domain.csv' WITH CSV HEADER;
 \copy (SELECT * FROM concept_class WHERE concept_class_id in ('Vocabulary','Concept Class','Domain','Clinical Finding','Relationship','Model Comp','Gender','Race','Ethnicity','Visit','Undefined','Visit Type','Obs Period Type','Cohort','Condition Type','4-dig nonbill code','5-dig billing code','3-dig nonbill code') ORDER BY concept_class_id) TO 'concept_class.csv' WITH CSV HEADER;
 ---------------------------------------------
+CREATE TEMPORARY TABLE visit_concepts AS
+    SELECT descendant_concept_id AS id
+      FROM concept_ancestor
+     WHERE ancestor_concept_id IN (262,9203,9201);
+CREATE TEMPORARY TABLE condition_concepts AS
+    SELECT descendant_concept_id AS id
+      FROM concept_ancestor
+     WHERE ancestor_concept_id IN (4329847);
 CREATE TEMPORARY TABLE conditions AS
     SELECT * from condition_occurrence
-     WHERE person_id = 107680
-      AND condition_concept_id IN (
-             SELECT descendant_concept_id
-               FROM concept_ancestor
-              WHERE ancestor_concept_id = 4329847);
+     WHERE person_id IN ( 107680, 95538, 46608, 1780)
+       AND condition_concept_id IN (SELECT id from condition_concepts);
 CREATE TEMPORARY TABLE persons AS
     SELECT * FROM person
       WHERE person_id IN (SELECT person_id FROM conditions);
-CREATE TEMPORARY TABLE visits AS
+CREATE TEMPORARY TABLE nearby_visits AS
+    SELECT * FROM visit_occurrence O
+      WHERE O.person_id IN (SELECT person_id FROM conditions)
+        AND O.visit_concept_id IN (SELECT id from visit_concepts)
+        AND EXISTS (
+               SELECT 'X'
+                 FROM conditions C
+                WHERE C.person_id IN (SELECT person_id FROM conditions)
+                  AND C.condition_start_date >= O.visit_start_date
+                  AND COALESCE(C.condition_end_date, 
+                          C.condition_start_date + 0*INTERVAL'1 day')
+                      <= O.visit_end_date);
+CREATE TEMPORARY TABLE visits AS (
     SELECT * from visit_occurrence
      WHERE visit_occurrence_id IN
-         (SELECT visit_occurrence_id FROM conditions);
+         (SELECT visit_occurrence_id FROM conditions)
+    UNION SELECT * FROM nearby_visits);
 CREATE TEMPORARY TABLE providers AS
     SELECT * FROM provider
      WHERE provider_id IN (

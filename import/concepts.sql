@@ -6,13 +6,14 @@ INSERT INTO concepts(id) values (316866); -- Hypertensive Disorder
 INSERT INTO concepts(id) values (45768449); -- Hypertensive Crisis
 INSERT INTO concepts(id) values (38003564), (8532), (8527); -- Person 107680.
 INSERT INTO concepts(id) values (4), (44819134), (44819035), (44819108), (44819086), (2), (44819109), (44819030), (3);
-INSERT INTO concepts(id) values (0), (8507);
 INSERT INTO concepts(id) values (262),(9203),(9201),(44819119),(44819023),(9201),(9202),(44818517),(44819119),(44819023), (8), (44819044), (44819096), (44819039), (58), (44819150); -- Visit concepts
 INSERT INTO concepts(id) values (44814722), (44819149), (44819062); -- Observational Period
 INSERT INTO concepts(id) values (8717), (8756), (8940), (44819110);
 
 INSERT INTO concepts(id) values (4329847), (444406); -- Myocardial infarction
 INSERT INTO concepts(id) values (444406), (38000200), (44825429), (44819127), (44819248), (5046), (45754877), (45754870), (45754876); -- condition_occurrence
+INSERT INTO concepts(id) values (0), (8507), (8516); 
+INSERT INTO concepts(id) values (38000230), (44835928), (312327), (438438), (44823111), (312327);
 
 -- calculate ancestor concepts
 WITH RECURSIVE t(n) AS (
