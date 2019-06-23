@@ -11,22 +11,19 @@ INSERT INTO concepts(id) values (262),(9203),(9201),(44819119),(44819023),(9201)
 INSERT INTO concepts(id) values (44814722), (44819149), (44819062); -- Observational Period
 INSERT INTO concepts(id) values (8717), (8756), (8940), (44819110);
 
-INSERT INTO concepts(id) values (4329847), (312327); -- Myocardial infarction
+INSERT INTO concepts(id) values (4329847), (444406); -- Myocardial infarction
 INSERT INTO concepts(id) values (444406), (38000200), (44825429), (44819127), (44819248), (5046), (45754877), (45754870), (45754876); -- condition_occurrence
-INSERT INTO concepts(id)
- SELECT ancestor_concept_id as id
-   FROM concept_ancestor
-   JOIN concepts ON (concepts.id = concept_ancestor.descendant_concept_id)
- EXCEPT SELECT id from concepts;
 
 -- calculate ancestor concepts
 WITH RECURSIVE t(n) AS (
     SELECT id FROM concepts
   UNION ALL
-    SELECT concept_id_2 as id FROM concept_relationship, t WHERE t.n = concept_relationship.concept_id_1 and concept_relationship.relationship_id = 'Is a'
+    SELECT concept_id_2 as id FROM concept_relationship, t
+    WHERE t.n = concept_relationship.concept_id_1
+      AND concept_relationship.relationship_id = 'Is a'
 )
 INSERT INTO concepts(id)
  SELECT DISTINCT n FROM t
   EXCEPT SELECT id from concepts;
 
-\copy (SELECT * FROM concepts) TO 'concepts.csv' CSV HEADER;
+\copy (SELECT * FROM concepts ORDER by id) TO 'concepts.csv' CSV HEADER;

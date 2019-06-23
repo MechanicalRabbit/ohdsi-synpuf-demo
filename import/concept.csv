@@ -103,4 +103,3 @@ concept_id,concept_name,domain_id,vocabulary_id,concept_class_id,standard_concep
 45754876,3-digit non-billing code,Metadata,Concept Class,Concept Class,,OMOP generated,1970-01-01,2099-12-31,
 45754877,4-digit non-billing code,Metadata,Concept Class,Concept Class,,OMOP generated,1970-01-01,2099-12-31,
 45768449,Hypertensive crisis,Condition,SNOMED,Clinical Finding,S,706882009,2015-01-31,2099-12-31,
-500000801,OMOP Acute Myocardial Infarction 1,Condition,Cohort,Cohort,C,500000801,1970-01-01,2099-12-31,
