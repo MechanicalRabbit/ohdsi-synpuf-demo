@@ -1,0 +1,44 @@
+This repository contains materials copyrighted by several parties:
+
+* It uses the OHDSI CDM version 5.0 for PostgreSQL, authored
+  by Patrick Ryan, and released under the Apache license.
+
+* It uses subset of data from the CMS 2008-2010 Data Entrepreneurs’ 
+  Synthetic Public Use File (DE-SynPUF), as converted by OHDSI's
+  ETL-CMS project, also Apache licensed.
+
+* So that cohorts mentioned in TheBookOfOHDSI could be used,
+  it contains a de minimis subset of RxNorm, ICD-9, and SNOMED
+  in order to support unmodified data from 10 patients. 
+
+We consider the incorporation of a tiny subset of RxNorm and
+SNOMED codes to be "fair use" since: (a) entire hierarchies are
+not used, only top-level codes used in the cohort definitions as
+associated with only the exact lower-level codes found in the
+sample data; (b) the actual usage represents a tiny fraction of
+the entire fraction of said vocabularies, (c) the purpose of
+their use is to enable testing of tools that could work with
+those standards, (d) no other reasonable use of this subset 
+could be done due to its unsystematic and incomplete nature. 
+
+---
+
+SNOMED CT is a comprehensive clinical terminology, originally created
+by the College of American Pathologists (CAP) and, as of April 2007,
+owned, maintained, and distributed by the International Health
+Terminology Standards Development Organization (IHTSDO), a
+not-for-profit association. 
+
+RxNorm, a standardized nomenclature for clinical drugs for humans, is
+produced by the U.S. National Library of Medicine (NLM). RxNorm is one
+of a suite of designated standards for use in U.S. Federal Government
+systems for the electronic exchange of clinical health information. 
+
+The International Classification of Diseases, Ninth Revision, Clinical
+Modification (ICD-9-CM) is based on the World Health Organization's
+Ninth Revision, International Classification of Diseases (ICD-9). The
+National Center for Health Statistics (NCHS) and the Centers for
+Medicare and Medicaid Services (CMS) are the U.S. governmental agencies
+responsible for overseeing all changes and modifications to the
+ICD-9-CM.
+

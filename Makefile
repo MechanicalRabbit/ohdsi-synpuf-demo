@@ -1,3 +1,6 @@
+# This file is only used to build the synpuf-10p.sql
+# database dump, assuming there is a "synpuf" database.
+
 build:
 	dropdb --if-exists synpuf-10p
 	createdb synpuf-10p
