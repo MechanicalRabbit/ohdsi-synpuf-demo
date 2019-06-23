@@ -18,7 +18,8 @@ CREATE TEMPORARY TABLE condition_concepts AS
      WHERE ancestor_concept_id IN (4329847);
 CREATE TEMPORARY TABLE conditions AS
     SELECT * from condition_occurrence
-     WHERE person_id IN ( 107680, 95538, 46608, 1780)
+     WHERE person_id IN (107680, 95538, 1780, 110862, 69985, 30091, 
+                         72120, 37455, 42383, 82328 )
        AND condition_concept_id IN (SELECT id from condition_concepts);
 CREATE TEMPORARY TABLE persons AS
     SELECT * FROM person

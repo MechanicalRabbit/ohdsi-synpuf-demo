@@ -1,8 +1,15 @@
 care_site_id,care_site_name,place_of_service_concept_id,location_id,care_site_source_value,place_of_service_source_value
-3567,,8756,,4900CD,Outpatient Facility
+1422,,8756,,10028V,Outpatient Facility
+3547,,8756,,0600VR,Outpatient Facility
 3617,,8717,,1000AV,Inpatient Facility
 3852,,8717,,5001PC,Inpatient Facility
 3875,,8940,,957009733, 
+3903,,8717,,2200MM,Inpatient Facility
+9812,,8940,,565980590, 
+13897,,8756,,0600CD,Outpatient Facility
 16990,,8940,,683403127, 
 23997,,8717,,23T1ZR,Inpatient Facility
 33580,,8940,,837659996, 
+43378,,8717,,25S1YD,Inpatient Facility
+117750,,8940,,507211772, 
+137825,,8756,,2513SJ,Outpatient Facility

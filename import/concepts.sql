@@ -13,7 +13,7 @@ INSERT INTO concepts(id) values (8717), (8756), (8940), (44819110);
 INSERT INTO concepts(id) values (4329847), (444406); -- Myocardial infarction
 INSERT INTO concepts(id) values (444406), (38000200), (44825429), (44819127), (44819248), (5046), (45754877), (45754870), (45754876); -- condition_occurrence
 INSERT INTO concepts(id) values (0), (8507), (8516); 
-INSERT INTO concepts(id) values (38000230), (44835928), (312327), (438438), (44823111), (312327);
+INSERT INTO concepts(id) values (38000230), (44835928), (312327), (438438), (44820858), (438170), (44832374), (434376), (44819697);
 
 -- calculate ancestor concepts
 WITH RECURSIVE t(n) AS (

@@ -1,5 +1,8 @@
 person_id,gender_concept_id,year_of_birth,month_of_birth,day_of_birth,time_of_birth,race_concept_id,ethnicity_concept_id,location_id,provider_id,care_site_id,person_source_value,gender_source_value,gender_source_concept_id,race_source_value,race_source_concept_id,ethnicity_source_value,ethnicity_source_concept_id
 1780,8532,1940,2,1,,8516,38003564,229,,,03C244F1A64B223A,2,,2,,2,
-46608,8507,1953,7,1,,8527,38003564,337,,,65F83E49FCEACD92,1,,1,,1,
+30091,8532,1932,8,1,,8527,38003564,2135,,,41C0357AA0641AEC,2,,1,,1,
+37455,8532,1913,7,1,,8527,38003564,1037,,,51CDC3B3A4C75AA0,2,,1,,1,
+69985,8532,1956,7,1,,8527,38003564,373,,,99DA34DB27BBCA8D,2,,1,,1,
 95538,8507,1923,11,1,,8527,38003564,9,,,D1EBF9FE96F83376,1,,1,,1,
 107680,8532,1963,12,1,,8527,38003564,116,,,ECFDFA95D3C9A010,2,,1,,1,
+110862,8507,1911,4,1,,8527,38003564,436,,,F3EFC3CB3F2C9D5E,1,,1,,1,
