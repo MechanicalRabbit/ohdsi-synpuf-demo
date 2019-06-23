@@ -8,6 +8,6 @@ test:
 
 
 concepts:
-	cd import && psql -f concepts.sql synpuf5
-export:
-	cd import && psql -f export.sql synpuf5
+	cd export && psql -f concepts.sql synpuf5
+exports:
+	cd export && psql -f export.sql synpuf5

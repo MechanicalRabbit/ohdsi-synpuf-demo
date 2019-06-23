@@ -2,11 +2,11 @@
 CREATE TEMPORARY TABLE concepts (id INTEGER);
 \copy concepts FROM 'concepts.csv' WITH CSV HEADER;
 -----------------------------------
-\copy (SELECT * FROM relationship WHERE relationship_id in ('Is a', 'Subsumes') ORDER BY relationship_id) TO 'relationship.csv' WITH CSV HEADER;
-\copy (SELECT * FROM concept WHERE concept_id in (SELECT id FROM concepts) ORDER BY concept_id) TO 'concept.csv' WITH CSV HEADER;
-\copy (SELECT * FROM vocabulary WHERE vocabulary_id in ('Concept Class','Vocabulary','Domain','SNOMED','Relationship','Gender','Race','Ethnicity','Visit','None','Visit Type','Obs Period Type','CMS Place of Service','Cohort', 'Condition Type','ICD9CM','Drug Type','RxNorm','NDC') ORDER BY vocabulary_id) TO 'vocabulary.csv' WITH CSV HEADER;
-\copy (SELECT * FROM domain WHERE domain_id in ('Metadata','Condition','Gender','Race','Ethnicity','Visit','Type Concept', 'Drug') ORDER BY domain_id) TO 'domain.csv' WITH CSV HEADER;
-\copy (SELECT * FROM concept_class WHERE concept_class_id in ('Vocabulary','Concept Class','Domain','Clinical Finding','Relationship','Model Comp','Gender','Race','Ethnicity','Visit','Undefined','Visit Type','Obs Period Type','Cohort','Condition Type','4-dig nonbill code','5-dig billing code','3-dig nonbill code','4-dig billing code','Drug Type','Clinical Drug','11-digit NDC','Branded Drug','Ingredient') ORDER BY concept_class_id) TO 'concept_class.csv' WITH CSV HEADER;
+\copy (SELECT * FROM relationship WHERE relationship_id in ('Is a', 'Subsumes') ORDER BY relationship_id) TO '../import/relationship.csv' WITH CSV HEADER;
+\copy (SELECT * FROM concept WHERE concept_id in (SELECT id FROM concepts) ORDER BY concept_id) TO '../import/concept.csv' WITH CSV HEADER;
+\copy (SELECT * FROM vocabulary WHERE vocabulary_id in ('Concept Class','Vocabulary','Domain','SNOMED','Relationship','Gender','Race','Ethnicity','Visit','None','Visit Type','Obs Period Type','CMS Place of Service','Cohort', 'Condition Type','ICD9CM','Drug Type','RxNorm','NDC') ORDER BY vocabulary_id) TO '../import/vocabulary.csv' WITH CSV HEADER;
+\copy (SELECT * FROM domain WHERE domain_id in ('Metadata','Condition','Gender','Race','Ethnicity','Visit','Type Concept', 'Drug') ORDER BY domain_id) TO '../import/domain.csv' WITH CSV HEADER;
+\copy (SELECT * FROM concept_class WHERE concept_class_id in ('Vocabulary','Concept Class','Domain','Clinical Finding','Relationship','Model Comp','Gender','Race','Ethnicity','Visit','Undefined','Visit Type','Obs Period Type','Cohort','Condition Type','4-dig nonbill code','5-dig billing code','3-dig nonbill code','4-dig billing code','Drug Type','Clinical Drug','11-digit NDC','Branded Drug','Ingredient') ORDER BY concept_class_id) TO '../import/concept_class.csv' WITH CSV HEADER;
 ---------------------------------------------
 CREATE TEMPORARY TABLE visit_concepts AS
     SELECT descendant_concept_id AS id
@@ -78,16 +78,16 @@ CREATE TEMPORARY TABLE periods AS
     SELECT * FROM observation_period
      WHERE person_id IN (SELECT person_id from persons);
 
-\copy (select * from conditions order by condition_occurrence_id) TO 'condition_occurrence.csv'  WITH CSV HEADER;
-\copy (SELECT * FROM visits order by visit_occurrence_id) TO 'visit_occurrence.csv'  WITH CSV HEADER;
-\copy (SELECT * FROM persons order by person_id) TO 'person.csv'  WITH CSV HEADER;
-\copy (SELECT * FROM providers order by provider_id) TO 'provider.csv'  WITH CSV HEADER;
-\copy (select * from caresites order by care_site_id) TO 'care_site.csv'  WITH CSV HEADER;
-\copy (SELECT * FROM locations order by location_id) TO 'location.csv' WITH CSV HEADER;
-\copy (SELECT * FROM periods order by observation_period_id) TO 'observation_period.csv'  WITH CSV HEADER;
-\copy (SELECT * FROM exposures order by drug_exposure_id) TO 'drug_exposure.csv'  WITH CSV HEADER;
-\copy (SELECT * FROM eras order by drug_era_id) TO 'drug_era.csv'  WITH CSV HEADER;
+\copy (select * from conditions order by condition_occurrence_id) TO '../import/condition_occurrence.csv'  WITH CSV HEADER;
+\copy (SELECT * FROM visits order by visit_occurrence_id) TO '../import/visit_occurrence.csv'  WITH CSV HEADER;
+\copy (SELECT * FROM persons order by person_id) TO '../import/person.csv'  WITH CSV HEADER;
+\copy (SELECT * FROM providers order by provider_id) TO '../import/provider.csv'  WITH CSV HEADER;
+\copy (select * from caresites order by care_site_id) TO '../import/care_site.csv'  WITH CSV HEADER;
+\copy (SELECT * FROM locations order by location_id) TO '../import/location.csv' WITH CSV HEADER;
+\copy (SELECT * FROM periods order by observation_period_id) TO '../import/observation_period.csv'  WITH CSV HEADER;
+\copy (SELECT * FROM exposures order by drug_exposure_id) TO '../import/drug_exposure.csv'  WITH CSV HEADER;
+\copy (SELECT * FROM eras order by drug_era_id) TO '../import/drug_era.csv'  WITH CSV HEADER;
 
 ----
-\copy (SELECT * FROM concept_ancestor WHERE descendant_concept_id in (SELECT id FROM concepts) AND ancestor_concept_id in (SELECT id from concepts) AND descendant_concept_id != ancestor_concept_id ORDER BY ancestor_concept_id, descendant_concept_id) TO 'concept_ancestor.csv' WITH CSV HEADER;
-\copy (SELECT * FROM concept_relationship WHERE concept_id_1 in (SELECT id FROM concepts) AND concept_id_2 in (SELECT id FROM concepts) AND relationship_id IN ('Is a') ORDER BY concept_id_1, concept_id_2) TO 'concept_relationship.csv' WITH CSV HEADER;
+\copy (SELECT * FROM concept_ancestor WHERE descendant_concept_id in (SELECT id FROM concepts) AND ancestor_concept_id in (SELECT id from concepts) AND descendant_concept_id != ancestor_concept_id ORDER BY ancestor_concept_id, descendant_concept_id) TO '../import/concept_ancestor.csv' WITH CSV HEADER;
+\copy (SELECT * FROM concept_relationship WHERE concept_id_1 in (SELECT id FROM concepts) AND concept_id_2 in (SELECT id FROM concepts) AND relationship_id IN ('Is a') ORDER BY concept_id_1, concept_id_2) TO '../import/concept_relationship.csv' WITH CSV HEADER;
