@@ -15,12 +15,3 @@ CREATE OR REPLACE VIEW cohort_dia AS (select * from cohort where
     cohort_definition_id = 1770676);
 CREATE OR REPLACE VIEW cohort_all AS (select * from cohort where
     cohort_definition_id IN (1770673,1770674,1770675,1770676));
-
-CREATE OR REPLACE VIEW concept_4329847 AS
-   select * from concept where concept_id in (select
-    condition_concept_id from condition_occurrence where
-    condition_concept_id in (select descendant_concept_id from
-        concept_ancestor where ancestor_concept_id in (4329847)) and
-           person_id in (select person_id from cohort_all));
-
-
