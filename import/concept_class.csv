@@ -1,15 +1,20 @@
 concept_class_id,concept_class_name,concept_class_concept_id
+11-digit NDC,11-digit NDC code,44819243
 3-dig nonbill code,3-digit non-billing code,45754876
 4-dig billing code,4-digit billing code,45754869
 4-dig nonbill code,4-digit non-billing code,45754877
 5-dig billing code,5-digit billing code,45754870
+Branded Drug,Semantic Branded Drug,44819063
+Clinical Drug,Semantic Clinical Drug,44819028
 Clinical Finding,Clinical Finding,44818997
 Cohort,Cohort,44819246
 Concept Class,OMOP Concept Class,44819247
 Condition Type,Condition Type,44819248
 Domain,Domain,44819025
+Drug Type,Drug Type,44819252
 Ethnicity,Ethnicity,44819035
 Gender,Gender,44819086
+Ingredient,Ingredient,44818981
 Model Comp,Model Component,44819058
 Obs Period Type,Observation Period Type,44819062
 Race,Race,44819030

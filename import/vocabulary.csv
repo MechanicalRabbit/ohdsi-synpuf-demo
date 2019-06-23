@@ -4,13 +4,16 @@ Cohort,Legacy OMOP HOI or DOI cohort,OMOP generated,,44819123
 Concept Class,OMOP Concept Class,OMOP generated,,44819233
 Condition Type,OMOP Condition Occurrence Type,OMOP generated,,44819127
 Domain,OMOP Domain,OMOP generated,,44819147
+Drug Type,OMOP Drug Exposure Type,OMOP generated,,44819126
 Ethnicity,OMOP Ethnicity,OMOP generated,,44819134
 Gender,OMOP Gender,OMOP generated,,44819108
 ICD9CM,"International Classification of Diseases, Ninth Revision, Clinical Modification, Volume 1 and 2 (NCHS)",http://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes.html,ICD9CM v32 master descriptions,5046
+NDC,National Drug Code (FDA and manufacturers),"http://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html, http://www.fda.gov/downloads/Drugs/DevelopmentApprovalProcess/UCM070838.zip",NDC 20190519,44819105
 None,OMOP Standardized Vocabularies,OMOP generated,v5.0 21-MAY-19,44819096
 Obs Period Type,OMOP Observation Period Type,OMOP generated,,44819149
 Race,Race and Ethnicity Code Set (USBC),http://www.cdc.gov/nchs/data/dvs/Race_Ethnicity_CodeSet.pdf,Version 1.0,44819109
 Relationship,OMOP Relationship,OMOP generated,,44819235
+RxNorm,RxNorm (NLM),http://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html,RxNorm 20190506,44819104
 SNOMED,Systematic Nomenclature of Medicine - Clinical Terms (IHTSDO),http://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html,Snomed Release 20190131,44819097
 Visit,OMOP Visit,OMOP generated,,44819119
 Visit Type,OMOP Visit Type,OMOP generated,,44819150

@@ -1,5 +1,6 @@
 domain_id,domain_name,domain_concept_id
 Condition,Condition,19
+Drug,Drug,13
 Ethnicity,Ethnicity,4
 Gender,Gender,2
 Metadata,Metadata,7
