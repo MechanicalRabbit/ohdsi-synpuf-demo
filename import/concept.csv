@@ -34,6 +34,7 @@ concept_id,concept_name,domain_id,vocabulary_id,concept_class_id,standard_concep
 907013,Metolazone,Drug,RxNorm,Ingredient,S,6916,1970-01-01,2099-12-31,
 907020,Metolazone 5 MG Oral Tablet,Drug,RxNorm,Clinical Drug,S,311671,1970-01-01,2099-12-31,
 974166,Hydrochlorothiazide,Drug,RxNorm,Ingredient,S,5487,1970-01-01,2099-12-31,
+978555,Indapamide,Drug,RxNorm,Ingredient,S,5764,1970-01-01,2099-12-31,
 1308216,Lisinopril,Drug,RxNorm,Ingredient,S,29046,1970-01-01,2099-12-31,
 1334456,Ramipril,Drug,RxNorm,Ingredient,S,35296,1970-01-01,2099-12-31,
 1334459,Ramipril 2.5 MG Oral Capsule,Drug,RxNorm,Clinical Drug,S,198188,1970-01-01,2099-12-31,
