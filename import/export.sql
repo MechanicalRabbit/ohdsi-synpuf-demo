@@ -6,7 +6,7 @@ CREATE TEMPORARY TABLE concepts (id INTEGER);
 \copy (SELECT * FROM concept WHERE concept_id in (SELECT id FROM concepts) ORDER BY concept_id) TO 'concept.csv' WITH CSV HEADER;
 \copy (SELECT * FROM vocabulary WHERE vocabulary_id in ('Concept Class','Vocabulary','Domain','SNOMED','Relationship','Gender','Race','Ethnicity','Visit','None','Visit Type','Obs Period Type','CMS Place of Service','Cohort', 'Condition Type','ICD9CM') ORDER BY vocabulary_id) TO 'vocabulary.csv' WITH CSV HEADER;
 \copy (SELECT * FROM domain WHERE domain_id in ('Metadata','Condition','Gender','Race','Ethnicity','Visit','Type Concept') ORDER BY domain_id) TO 'domain.csv' WITH CSV HEADER;
-\copy (SELECT * FROM concept_class WHERE concept_class_id in ('Vocabulary','Concept Class','Domain','Clinical Finding','Relationship','Model Comp','Gender','Race','Ethnicity','Visit','Undefined','Visit Type','Obs Period Type','Cohort','Condition Type','4-dig nonbill code','5-dig billing code','3-dig nonbill code') ORDER BY concept_class_id) TO 'concept_class.csv' WITH CSV HEADER;
+\copy (SELECT * FROM concept_class WHERE concept_class_id in ('Vocabulary','Concept Class','Domain','Clinical Finding','Relationship','Model Comp','Gender','Race','Ethnicity','Visit','Undefined','Visit Type','Obs Period Type','Cohort','Condition Type','4-dig nonbill code','5-dig billing code','3-dig nonbill code','4-dig billing code') ORDER BY concept_class_id) TO 'concept_class.csv' WITH CSV HEADER;
 ---------------------------------------------
 CREATE TEMPORARY TABLE visit_concepts AS
     SELECT descendant_concept_id AS id
@@ -15,7 +15,7 @@ CREATE TEMPORARY TABLE visit_concepts AS
 CREATE TEMPORARY TABLE condition_concepts AS
     SELECT descendant_concept_id AS id
       FROM concept_ancestor
-     WHERE ancestor_concept_id IN (4329847);
+     WHERE ancestor_concept_id IN (4329847, 316866);
 CREATE TEMPORARY TABLE conditions AS
     SELECT * from condition_occurrence
      WHERE person_id IN (107680, 95538, 1780, 110862, 69985, 30091, 

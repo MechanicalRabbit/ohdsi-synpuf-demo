@@ -1,5 +1,6 @@
 concept_class_id,concept_class_name,concept_class_concept_id
 3-dig nonbill code,3-digit non-billing code,45754876
+4-dig billing code,4-digit billing code,45754869
 4-dig nonbill code,4-digit non-billing code,45754877
 5-dig billing code,5-digit billing code,45754870
 Clinical Finding,Clinical Finding,44818997

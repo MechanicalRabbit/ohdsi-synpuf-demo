@@ -1,15 +1,37 @@
 care_site_id,care_site_name,place_of_service_concept_id,location_id,care_site_source_value,place_of_service_source_value
+13,,8940,,673314266, 
+40,,8940,,532092265, 
+1224,,8940,,326159978, 
 1422,,8756,,10028V,Outpatient Facility
+1640,,8940,,803844699, 
+2600,,8717,,0601TR,Inpatient Facility
 3547,,8756,,0600VR,Outpatient Facility
 3617,,8717,,1000AV,Inpatient Facility
+3783,,8940,,392790749, 
 3852,,8717,,5001PC,Inpatient Facility
 3875,,8940,,957009733, 
 3903,,8717,,2200MM,Inpatient Facility
+8192,,8940,,682184334, 
+8292,,8940,,396701521, 
 9812,,8940,,565980590, 
+13448,,8756,,2585MN,Outpatient Facility
+13456,,8940,,744920165, 
 13897,,8756,,0600CD,Outpatient Facility
+15128,,8756,,3301WB,Outpatient Facility
 16990,,8940,,683403127, 
+18933,,8717,,06008K,Inpatient Facility
+18956,,8940,,043570860, 
+21318,,8940,,064907993, 
 23997,,8717,,23T1ZR,Inpatient Facility
 33580,,8940,,837659996, 
+33583,,8940,,880523932, 
+33787,,8940,,256810062, 
+34511,,8940,,799224819, 
 43378,,8717,,25S1YD,Inpatient Facility
+45274,,8756,,5001VM,Outpatient Facility
+50533,,8940,,358716972, 
+77156,,8717,,5000KP,Inpatient Facility
+79762,,8940,,485528653, 
+103488,,8940,,420824437, 
 117750,,8940,,507211772, 
 137825,,8756,,2513SJ,Outpatient Facility
