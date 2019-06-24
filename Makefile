@@ -1,5 +1,10 @@
-# This file is only used to build the synpuf-10p.sql
-# database dump, assuming there is a "synpuf" database.
+# This file is used to build the database snapshot, synpuf-10p.sql,
+# assuming there is a "synpuf" database. It also is used to run
+# DataKnots queries to replicate chorts in the Book Of OHDSI.
+
+test:
+	PGHOST=/var/run/postgresql PGDATABASE=synpuf-10p \
+		   julia -e "using NarrativeTest; runtests()"
 
 build:
 	dropdb --if-exists synpuf-10p
@@ -8,7 +13,6 @@ build:
 	cd import && psql -f import.sql synpuf-10p
 	psql -q -f ohdsi-cdm/create-indexes.sql synpuf-10p 
 	psql -q -f ohdsi-cdm/create-constraints.sql synpuf-10p
-
 
 # these are unnecessary unless updating import files
 concepts:
