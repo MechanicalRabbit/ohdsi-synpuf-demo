@@ -1,4 +1,4 @@
-## SYNPUF-10P 
+## SYNPUF-HCFU
 
 This is a PostgreSQL database dump of OHDSI Common Data Model
 version 5.0 that is loaded with the bare minimum data to get
