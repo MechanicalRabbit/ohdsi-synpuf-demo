@@ -25,6 +25,8 @@ INSERT INTO concepts(id) values (40174825), (38000175), (45039771), (19019044), 
 INSERT INTO concepts(id) values (907013), (974166), (974166), (1308216), (1308216), (1334456), (1340128), (1341927), (1347384), (1373928), (1395058);
 -- Thiazine diuretic
 INSERT INTO concepts(id) values (1395058), (974166), (978555), (907013);
+-- Mentioned in Cohorts
+INSERT INTO concepts(id) values (314666);
 
 -- calculate ancestor concepts
 WITH RECURSIVE t(n) AS (

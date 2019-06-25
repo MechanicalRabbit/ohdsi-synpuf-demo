@@ -22,6 +22,7 @@ concept_id,concept_name,domain_id,vocabulary_id,concept_class_id,standard_concep
 9202,Outpatient Visit,Visit,Visit,Visit,S,OP,1970-01-01,2099-12-31,
 9203,Emergency Room Visit,Visit,Visit,Visit,S,ER,1970-01-01,2099-12-31,
 312327,Acute myocardial infarction,Condition,SNOMED,Clinical Finding,S,57054005,1970-01-01,2099-12-31,
+314666,Old myocardial infarction,Condition,SNOMED,Clinical Finding,S,1755008,1970-01-01,2099-12-31,
 316866,Hypertensive disorder,Condition,SNOMED,Clinical Finding,S,38341003,1970-01-01,2099-12-31,
 317895,Renovascular hypertension,Condition,SNOMED,Clinical Finding,S,123799005,1970-01-01,2099-12-31,
 317898,Malignant essential hypertension,Condition,SNOMED,Clinical Finding,S,78975002,1970-01-01,2099-12-31,
