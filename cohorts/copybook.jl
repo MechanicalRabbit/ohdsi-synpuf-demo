@@ -57,9 +57,9 @@ translate(::Module, ::Val{:ancestor_concept}) = AncestorConcept
 AnyOf(Xs...) = Lift(|, (Xs...,))
 OneOf(X, Ys...) = AnyOf((X .== Y for Y in Ys)...)
 HasCode(vocabulary_id, codes...) =
-    (It.vocabulary_id .== string(vocabulary_id)) .&
-     OneOf(It.concept_code, string.(codes)...) .&
-     .! Exists(It.invalid_reason)
+    (It.vocabulary_id .== vocabulary_id) .&
+    OneOf(It.concept_code, codes...) .&
+    .! Exists(It.invalid_reason)
 IsCoded(vocabulary_id, codes...) =
     Exists(
         Filter(HasCode(vocabulary_id, codes...) .|
