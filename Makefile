@@ -6,6 +6,10 @@ test:
 	PGHOST=/var/run/postgresql PGDATABASE=synpuf-10p \
 		   julia -e "using NarrativeTest; runtests()"
 
+shell:
+	cd cohorts && PGHOST=/var/run/postgresql PGDATABASE=synpuf-10p \
+		julia -L copybook.jl
+
 build:
 	dropdb --if-exists synpuf-10p
 	createdb synpuf-10p
