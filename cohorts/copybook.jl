@@ -1,4 +1,4 @@
-using LibPQ, DataKnots, DataKnots4Postgres
+using Dates, LibPQ, DataKnots, DataKnots4Postgres
 using DataKnots: Query, Environment, Pipeline, target, lookup,
                  compose, cover, syntaxof
 import DataKnots: translate
@@ -24,13 +24,39 @@ function CascadeGet(env::Environment, p::Pipeline, names...)
           " at\n$(syntaxof(tgt))")
 end
 
-const Concept = CascadeGet(:concept, :fpk_observation_concept,
-                           :fpk_visit_concept, :fpk_condition_concept,
-                           :fpk_device_concept, :fpk_procedure_concept,
-                           :fpk_drug_era_concept, :fpk_drug_concept) >>
-                Label(:concept)
+const Concept =
+    CascadeGet(:concept, :fpk_observation_concept,
+               :fpk_visit_concept, :fpk_condition_concept,
+               :fpk_device_concept, :fpk_procedure_concept,
+               :fpk_drug_era_concept, :fpk_drug_concept) >>
+    Label(:concept)
 
 translate(::Module, ::Val{:concept}) = Concept
+
+const StartDate =
+    Is1to1(
+        CascadeGet(:start_date, :condition_start_date,
+                   :visit_start_date, :observation_period_start_date,
+                   :drug_exposure_start_date, :drug_era_start_date,
+                   :procedure_date, :device_exposure_start_date) >>
+        Label(:start_date))
+
+translate(::Module, ::Val{:start_date}) = StartDate
+
+const EndDate =
+    Is1to1(
+        Given(:start_date => StartDate,
+              :end_date => CascadeGet(:end_date, :condition_end_date,
+                                      :visit_end_date, :procedure_date,
+                                      :observation_period_end_date,
+                                      :device_exposure_end_date,
+                                      :drug_exposure_end_date,
+                                      :drug_era_end_date),
+              coalesce.(It.end_date, It.start_date)) >>
+        Date.(It) >>
+        Label(:end_date))
+
+translate(::Module, ::Val{:end_date}) = EndDate
 
 # Let's also make `condition` work globally and locally to retrieve
 # condition_occurrence records by patient. Unfortunately, `Condition`
@@ -77,4 +103,19 @@ translate(mod::Module, ::Val{:iscoded}, args::Tuple{Any,Vararg{Any}}) =
     IsCoded(translate.(Ref(mod), args)...)
 
 sp10 = DataKnot(LibPQ.Connection(""))
+
+# playground...
+ 
+PrimaryEvents =
+    It.condition_occurrence >>
+    Filter(Concept >> IsCoded("SNOMED", 22298006)) >>
+    Keep(:condition => It) >>
+    Record(:co => It, :person_id => It.person_id) >>
+    Join(It.observation_period >>
+         Filter(It.person_id .== It.condition.person_id) >>
+         Record(It.person_id, It.condition.person_id,
+                It.observation_period_start_date,
+                It.observation_period_end_date)) >>
+    It.observation_period
+
 
