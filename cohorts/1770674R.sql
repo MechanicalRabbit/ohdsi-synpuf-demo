@@ -81,12 +81,8 @@ UNION  select c.concept_id
 
 
 
-CREATE TEMP TABLE qualified_events
 
-
-AS
-WITH primary_events (event_id, person_id, start_date, end_date, op_start_date, op_end_date, visit_occurrence_id)  AS (
-
+CREATE TEMP TABLE TEMP_PRIMARY_EVENTS AS
 -- Begin Primary Events
 
 select P.ordinal as event_id, P.person_id, P.start_date, P.end_date, op_start_date, op_end_date, cast(P.visit_occurrence_id as bigint) as visit_occurrence_id
@@ -138,9 +134,14 @@ FROM
 -- End Primary Events
 
 
+;
 
-)
+CREATE TEMP TABLE qualified_events
 
+
+AS
+WITH primary_events (event_id, person_id, start_date, end_date, op_start_date, op_end_date, visit_occurrence_id)  AS 
+   (SELECT * FROM TEMP_PRIMARY_EVENTS)
  SELECT
 event_id, person_id, start_date, end_date, op_start_date, op_end_date, visit_occurrence_id
 
