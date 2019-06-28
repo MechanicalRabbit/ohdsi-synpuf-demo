@@ -41,6 +41,11 @@ translate(::Module, ::Val{:condition}) =
                   :condition_occurrence_via_fpk_condition_person) >>
               Label(:condition)
 
+translate(::Module, ::Val{:visit}) =
+              CascadeGet(:visit_occurrence,
+                  :visit_occurrence_via_fpk_visit_person) >>
+              Label(:visit)
+
 # Sometimes it's useful to list the concepts ancestors.
 
 AncestorConcept =
@@ -58,7 +63,7 @@ AnyOf(Xs...) = Lift(|, (Xs...,))
 OneOf(X, Ys...) = AnyOf((X .== Y for Y in Ys)...)
 HasCode(vocabulary_id, codes...) =
     (It.vocabulary_id .== vocabulary_id) .&
-    OneOf(It.concept_code, codes...) .&
+    OneOf(It.concept_code, (string.(code) for code in codes)...) .&
     .! Exists(It.invalid_reason)
 IsCoded(vocabulary_id, codes...) =
     Exists(
@@ -66,7 +71,6 @@ IsCoded(vocabulary_id, codes...) =
                Exists(AncestorConcept >>
                       Filter(HasCode(vocabulary_id, codes...)))))
 
-# hmm, how do get these translated?
 translate(mod::Module, ::Val{:hascode}, args::Tuple{Any,Vararg{Any}}) =
     HasCode(translate.(Ref(mod), args)...)
 translate(mod::Module, ::Val{:iscoded}, args::Tuple{Any,Vararg{Any}}) =

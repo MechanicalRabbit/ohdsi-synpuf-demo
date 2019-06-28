@@ -15,3 +15,4 @@
 \copy drug_exposure FROM 'drug_exposure.csv' WITH CSV HEADER
 \copy drug_era FROM 'drug_era.csv' WITH CSV HEADER
 \include cohort_definition.sql
+\include deviations.sql
