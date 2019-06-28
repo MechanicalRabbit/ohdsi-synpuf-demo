@@ -24,6 +24,14 @@ function CascadeGet(env::Environment, p::Pipeline, names...)
           " at\n$(syntaxof(tgt))")
 end
 
+const ObservationPeriod =
+    CascadeGet(:observation_period,
+               :observation_period_via_fpk_observation_period_person) >>
+    Label(:observation_period)
+
+translate(::Module, ::Val{:observation_period}) = ObservationPeriod
+
+
 const Concept =
     CascadeGet(:concept, :fpk_observation_concept,
                :fpk_visit_concept, :fpk_condition_concept,
@@ -32,6 +40,15 @@ const Concept =
     Label(:concept)
 
 translate(::Module, ::Val{:concept}) = Concept
+
+const Person =
+    CascadeGet(:person, :fpk_observation_person,
+               :fpk_visit_person, :fpk_condition_person,
+               :fpk_device_person, :fpk_procedure_person,
+               :fpk_drug_era_person, :fpk_drug_person) >>
+    Label(:person)
+
+translate(::Module, ::Val{:person}) = Person
 
 const StartDate =
     Is1to1(
@@ -103,20 +120,28 @@ translate(mod::Module, ::Val{:hascode}, args::Tuple{Any,Vararg{Any}}) =
 translate(mod::Module, ::Val{:iscoded}, args::Tuple{Any,Vararg{Any}}) =
     IsCoded(translate.(Ref(mod), args)...)
 
+# Events in the system could be *observed* if their start occurs
+# within an observation period.
+
 sp10 = DataKnot(LibPQ.Connection(""))
 
-# playground...
- 
-PrimaryEvents =
-    It.condition_occurrence >>
-    Filter(Concept >> IsCoded("SNOMED", 22298006)) >>
-    Keep(:condition => It) >>
-    Record(:co => It, :person_id => It.person_id) >>
-    Join(It.observation_period >>
-         Filter(It.person_id .== It.condition.person_id) >>
-         Record(It.person_id, It.condition.person_id,
-                It.observation_period_start_date,
-                It.observation_period_end_date)) >>
-    It.observation_period
+# For various kinds of events, such as condition occurrences or drug
+# exposures, we remark if it starts within an observation period.
+# It is possible for an event to not be associated with an observation
+# period, see https://github.com/OHDSI/Themis/issues/23
 
+ItsObservationPeriod =
+    Given(:this_event_date => StartDate,
+      Is0to1(
+        Person >>
+        ObservationPeriod >>
+        Filter((It.this_event_date .>= StartDate) .&
+               (It.this_event_date .<= EndDate))))
+
+IsObservable = Exists(ItsObservationPeriod)
+
+translate(::Module, ::Val{:its_observation_period}) =
+    ItsObservationPeriod
+translate(::Module, ::Val{:is_observable}) =
+    IsObservable
 
