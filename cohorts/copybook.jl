@@ -130,18 +130,16 @@ sp10 = DataKnot(LibPQ.Connection(""))
 # It is possible for an event to not be associated with an observation
 # period, see https://github.com/OHDSI/Themis/issues/23
 
-ItsObservationPeriod =
-    Given(:this_event_date => StartDate,
+ItsObservationPeriod(prior_days = 0, after_days = 0) =
+    Given(:index_date => StartDate,
+          :prior_days => Lift(Day, (prior_days,)),
+          :after_days => Lift(Day, (after_days,)),
       Is0to1(
         Person >>
         ObservationPeriod >>
-        Filter((It.this_event_date .>= StartDate) .&
-               (It.this_event_date .<= EndDate))))
+        Filter((It.index_date .>= (StartDate .+ It.prior_days)) .&
+               (It.index_date .<= (EndDate .- It.after_days)))))
 
-IsObservable = Exists(ItsObservationPeriod)
-
-translate(::Module, ::Val{:its_observation_period}) =
-    ItsObservationPeriod
-translate(::Module, ::Val{:is_observable}) =
-    IsObservable
-
+translate(mod::Module, ::Val{:its_observation_period},
+          args::Tuple{Any, Any}) =
+    ItsObservationPeriod(translate.(Ref(mod), args)...)
