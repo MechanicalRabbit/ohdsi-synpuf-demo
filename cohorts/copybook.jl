@@ -62,19 +62,23 @@ const StartDate =
 translate(::Module, ::Val{:start_date}) = StartDate
 
 const EndDate =
-    Is1to1(
-           Given(:start_date => StartDate,
-              :end_date => CascadeGet(:end_date, :condition_end_date,
-                                      :visit_end_date, :procedure_date,
-                                      :observation_period_end_date,
-                                      :device_exposure_end_date,
-                                      :drug_exposure_end_date,
-                                      :drug_era_end_date),
-              coalesce.(It.end_date, It.start_date .+ Day(1))) >>
+        CascadeGet(:end_date, :condition_end_date,
+                              :visit_end_date, :procedure_date,
+                              :observation_period_end_date,
+                              :device_exposure_end_date,
+                              :drug_exposure_end_date,
+                              :drug_era_end_date) >>
         Date.(It) >>
-        Label(:end_date))
+        Label(:end_date)
 
 translate(::Module, ::Val{:end_date}) = EndDate
+
+const EndDateOrNextDay =
+    Is1to1(
+         coalesce.(EndDate, StartDate .+ Day(1)) >>
+         Label(:end_date_or_next_day))
+
+translate(::Module, ::Val{:end_date_or_next_day}) = EndDateOrNextDay
 
 # Let's also make `condition` work globally and locally to retrieve
 # condition_occurrence records by patient. Unfortunately, `Condition`
@@ -140,6 +144,9 @@ ItsObservationPeriod(prior_days = 0, after_days = 0) =
         Filter((It.index_date .>= (StartDate .+ It.prior_days)) .&
                (It.index_date .<= (EndDate .- It.after_days)))))
 
+# For the macro varient of this function, we wish to permit `prior`
+# and `after` arguments to be provided. Hence, we need slightly
+# improved translation which accepts keyword arguments.
 function translate_kwargs(mod, names, args)
     unpacked = []
     for (name, arg) in zip(names, args)
@@ -157,6 +164,9 @@ function translate_kwargs(mod, names, args)
     return translate.(Ref(mod), unpacked)
 end
 
+# In macros, which wish to write things like `90days`. For Julia
+# this interpreted as "90 * days", hence we just need to make "days"
+# be a constant of 1 day.
 translate(::Module, ::Val{:days}) = Dates.Day(1)
 
 translate(mod::Module, ::Val{:its_observation_period},
