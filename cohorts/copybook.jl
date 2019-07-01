@@ -157,6 +157,8 @@ function translate_kwargs(mod, names, args)
     return translate.(Ref(mod), unpacked)
 end
 
+translate(::Module, ::Val{:days}) = Dates.Day(1)
+
 translate(mod::Module, ::Val{:its_observation_period},
           args::Tuple{Any, Any}) =
     ItsObservationPeriod(
