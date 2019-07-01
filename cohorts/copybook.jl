@@ -3,6 +3,25 @@ using DataKnots: Query, Environment, Pipeline, target, lookup,
                  compose, cover, syntaxof
 import DataKnots: translate
 
+# For the macro variants of some combinators here, we wish to permit
+# keyword arguments to be used. This macro translation does this.
+function translate_kwargs(mod, names, args)
+    unpacked = []
+    for (name, arg) in zip(names, args)
+        if Meta.isexpr(arg, :kw)
+            key = arg.args[1]
+            if key !== name
+                err = "expected argument named `$(name)`, got `$(key)`"
+                throw(ArgumentError(err))
+            end
+            push!(unpacked, arg.args[2])
+        else
+            push!(unpacked, arg)
+        end
+    end
+    return translate.(Ref(mod), unpacked)
+end
+
 # This is a temporary work-around till we have better naming
 # support in the PostgreSQL adapter. Basically, we want to be able
 # to use `concept` in a query and either access the main concept
@@ -144,25 +163,6 @@ ItsObservationPeriod(prior_days = 0, after_days = 0) =
         Filter((It.index_date .>= (StartDate .+ It.prior_days)) .&
                (It.index_date .<= (EndDate .- It.after_days)))))
 
-# For the macro varient of this function, we wish to permit `prior`
-# and `after` arguments to be provided. Hence, we need slightly
-# improved translation which accepts keyword arguments.
-function translate_kwargs(mod, names, args)
-    unpacked = []
-    for (name, arg) in zip(names, args)
-        if Meta.isexpr(arg, :kw)
-            key = arg.args[1]
-            if key !== name
-                err = "expected argument named `$(name)`, got `$(key)`"
-                throw(ArgumentError(err))
-            end
-            push!(unpacked, arg.args[2])
-        else
-            push!(unpacked, arg)
-        end
-    end
-    return translate.(Ref(mod), unpacked)
-end
 
 # In macros, which wish to write things like `90days`. For Julia
 # this interpreted as "90 * days", hence we just need to make "days"
