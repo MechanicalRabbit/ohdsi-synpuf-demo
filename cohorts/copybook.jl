@@ -50,6 +50,12 @@ const ObservationPeriod =
 
 translate(::Module, ::Val{:observation_period}) = ObservationPeriod
 
+const Visit =
+    CascadeGet(:visit_occurrence,
+               :visit_occurrence_via_fpk_visit_person) >>
+    Label(:visit)
+
+translate(::Module, ::Val{:visit}) = Visit
 
 const Concept =
     CascadeGet(:concept, :fpk_observation_concept,
@@ -143,10 +149,11 @@ translate(mod::Module, ::Val{:hascode}, args::Tuple{Any,Vararg{Any}}) =
 translate(mod::Module, ::Val{:iscoded}, args::Tuple{Any,Vararg{Any}}) =
     IsCoded(translate.(Ref(mod), args)...)
 
-# Events in the system could be *observed* if their start occurs
-# within an observation period.
+# In macros, which wish to write things like `90days`. For Julia
+# this interpreted as "90 * days", hence we just need to make "days"
+# be a constant of 1 day.
 
-sp10 = DataKnot(LibPQ.Connection(""))
+translate(::Module, ::Val{:days}) = Dates.Day(1)
 
 # For various kinds of events, such as condition occurrences or drug
 # exposures, we remark if it starts within an observation period.
@@ -163,14 +170,29 @@ ItsObservationPeriod(prior_days = 0, after_days = 0) =
         Filter((It.index_date .>= (StartDate .+ It.prior_days)) .&
                (It.index_date .<= (EndDate .- It.after_days)))))
 
-
-# In macros, which wish to write things like `90days`. For Julia
-# this interpreted as "90 * days", hence we just need to make "days"
-# be a constant of 1 day.
-translate(::Module, ::Val{:days}) = Dates.Day(1)
-
 translate(mod::Module, ::Val{:its_observation_period},
           args::Tuple{Any, Any}) =
     ItsObservationPeriod(
         translate_kwargs(mod, (:prior, :after), args)...)
 
+# For various events, we could compute visits that overlap it,
+# requiring the visit starts a certin time prior to when the event
+# starts (the index date) and a certain time after it starts.
+
+OverlappingVisit(prior_days = 0, after_days = 0) =
+    Given(:index_date => StartDate,
+          :prior_days => Lift(Day, (prior_days,)),
+          :after_days => Lift(Day, (after_days,)),
+        Person >>
+        Visit >>
+        Filter((It.index_date .>= (StartDate .+ It.prior_days)) .&
+               (It.index_date .<= (EndDate .- It.after_days))))
+
+translate(mod::Module, ::Val{:overlapping_visit},
+          args::Tuple{Any, Any}) =
+    OverlappingVisit(
+        translate_kwargs(mod, (:prior, :after), args)...)
+
+# This creates our test database for us.
+
+sp10 = DataKnot(LibPQ.Connection(""))
