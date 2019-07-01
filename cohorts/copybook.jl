@@ -140,6 +140,25 @@ ItsObservationPeriod(prior_days = 0, after_days = 0) =
         Filter((It.index_date .>= (StartDate .+ It.prior_days)) .&
                (It.index_date .<= (EndDate .- It.after_days)))))
 
+function translate_kwargs(mod, names, args)
+    unpacked = []
+    for (name, arg) in zip(names, args)
+        if Meta.isexpr(arg, :kw)
+            key = arg.args[1]
+            if key !== name
+                err = "expected argument named `$(name)`, got `$(key)`"
+                throw(ArgumentError(err))
+            end
+            push!(unpacked, arg.args[2])
+        else
+            push!(unpacked, arg)
+        end
+    end
+    return translate.(Ref(mod), unpacked)
+end
+
 translate(mod::Module, ::Val{:its_observation_period},
           args::Tuple{Any, Any}) =
-    ItsObservationPeriod(translate.(Ref(mod), args)...)
+    ItsObservationPeriod(
+        translate_kwargs(mod, (:prior, :after), args)...)
+
