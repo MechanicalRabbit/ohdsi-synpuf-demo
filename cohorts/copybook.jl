@@ -155,20 +155,31 @@ translate(mod::Module, ::Val{:iscoded}, args::Tuple{Any,Vararg{Any}}) =
 
 translate(::Module, ::Val{:days}) = Dates.Day(1)
 
+# For various kinds of events, we're after how the start of one
+# occurs within the start/end of another. Here, the `StartDate` of
+# the event, such as a condition, is the index date upon which
+# comparisons are made.
+
+StartsWithin(X, prior=0, after=0) =
+    Given(:index_date => StartDate,
+          :prior_days => Lift(Day, (prior,)),
+          :after_days => Lift(Day, (after,)),
+        X >>
+        Filter((It.index_date .>= (StartDate .+ It.prior_days)) .&
+               (It.index_date .<= (EndDate .- It.after_days))))
+
+translate(mod::Module, ::Val{:starts_within},
+          args::Tuple{Any, Any}) =
+    StartsWithin(
+        translate_kwargs(mod, (:event, :prior, :after), args)...)
+
 # For various kinds of events, such as condition occurrences or drug
 # exposures, we remark if it starts within an observation period.
 # It is possible for an event to not be associated with an observation
 # period, see https://github.com/OHDSI/Themis/issues/23
 
-ItsObservationPeriod(prior_days = 0, after_days = 0) =
-    Given(:index_date => StartDate,
-          :prior_days => Lift(Day, (prior_days,)),
-          :after_days => Lift(Day, (after_days,)),
-      Is0to1(
-        Person >>
-        ObservationPeriod >>
-        Filter((It.index_date .>= (StartDate .+ It.prior_days)) .&
-               (It.index_date .<= (EndDate .- It.after_days)))))
+ItsObservationPeriod(prior=0, after=0) =
+    Is0to1(StartsWithin(Person >> ObservationPeriod, prior, after))
 
 translate(mod::Module, ::Val{:its_observation_period},
           args::Tuple{Any, Any}) =
@@ -177,21 +188,18 @@ translate(mod::Module, ::Val{:its_observation_period},
 
 # For various events, we could compute visits that overlap it,
 # requiring the visit starts a certin time prior to when the event
-# starts (the index date) and a certain time after it starts.
+# starts (the index date) and a certain time after it starts. The
+# prior/after padding is how much the visit should start before and
+# extend after the index date.
 
-OverlappingVisit(prior_days = 0, after_days = 0) =
-    Given(:index_date => StartDate,
-          :prior_days => Lift(Day, (prior_days,)),
-          :after_days => Lift(Day, (after_days,)),
-        Person >>
-        Visit >>
-        Filter((It.index_date .>= (StartDate .+ It.prior_days)) .&
-               (It.index_date .<= (EndDate .- It.after_days))))
+ItsVisit(prior=0, after=0) =
+    Given(:ob => ItsObservationPeriod(),
+        StartsWithin(Person >> Visit, prior, after)
+        >> Filter(It.ob .== ItsObservationPeriod()))
 
-translate(mod::Module, ::Val{:overlapping_visit},
+translate(mod::Module, ::Val{:its_visit},
           args::Tuple{Any, Any}) =
-    OverlappingVisit(
-        translate_kwargs(mod, (:prior, :after), args)...)
+    ItsVisit(translate_kwargs(mod, (:prior, :after), args)...)
 
 # This creates our test database for us.
 
