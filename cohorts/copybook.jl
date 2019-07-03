@@ -1,7 +1,7 @@
 using Dates, LibPQ, DataKnots, DataKnots4Postgres
 using DataKnots: Query, Environment, Pipeline, target, lookup,
-                 compose, cover, syntaxof
-import DataKnots: translate
+                 compose, cover, syntaxof, lift, designate
+import DataKnots: translate, lookup, Lift
 
 # For the macro variants of some combinators here, we wish to permit
 # keyword arguments to be used. This macro translation does this.
@@ -98,12 +98,22 @@ const EndDate =
 
 translate(::Module, ::Val{:end_date}) = EndDate
 
-const EndDateOrNextDay =
-    Is1to1(
-         coalesce.(EndDate, StartDate .+ Day(1)) >>
-         Label(:end_date_or_next_day))
+# Many query operations involve date ranges.
 
-translate(::Module, ::Val{:end_date_or_next_day}) = EndDateOrNextDay
+struct DateRange
+    start_date::Date
+    end_date::Date
+end
+
+DateRange(X,Y) = Lift(DateRange, (Date.(X), Date.(Y))) >>
+                 Label(:date_range)
+DateRange(X) = DateRange(X, X)
+DateRange() = DateRange(StartDate, coalesce.(EndDate, StartDate))
+lookup(ity::Type{DateRange}, name::Symbol) =
+    if name in (:start_date, :end_date)
+        lift(getfield, name) |> designate(ity, Date)
+    end
+Lift(::Type{DateRange}) = DateRange()
 
 # Let's also make `condition` work globally and locally to retrieve
 # condition_occurrence records by patient. Unfortunately, `Condition`
@@ -200,6 +210,22 @@ ItsVisit(prior=0, after=0) =
 translate(mod::Module, ::Val{:its_visit},
           args::Tuple{Any, Any}) =
     ItsVisit(translate_kwargs(mod, (:prior, :after), args)...)
+
+#
+
+Includes(event, prior=0, after=0) =
+    Given(
+          :index_date => event >> StartDate,
+          :prior_days => Lift(Day, (prior,)),
+          :after_days => Lift(Day, (after,)),
+        (It.index_date .>= (StartDate .+ It.prior_days)) .&
+        (It.index_date .<= (EndDate .- It.after_days)))
+
+translate(mod::Module, ::Val{:includes},
+          args::Tuple{Any, Any, Any}) =
+    Includes(
+        translate_kwargs(mod, (:event, :prior, :after), args)...)
+
 
 # This creates our test database for us.
 
