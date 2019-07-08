@@ -1,6 +1,6 @@
 using Dates, LibPQ, DataKnots, DataKnots4Postgres
-using DataKnots: Query, Environment, Pipeline, target, lookup,
-                 compose, cover, syntaxof, lift, designate
+using DataKnots: Query, Environment, Pipeline, target, lookup, cover,
+                 lift, compose, syntaxof, relabel, assemble, designate
 import DataKnots: translate, lookup, Lift
 
 # For the macro variants of some combinators here, we wish to permit
@@ -31,6 +31,25 @@ macro define(expr)
     name = Expr(:quote, expr.args[1])
     body = :(translate($__module__, $(Expr(:quote, expr.args[2]))))
     return :(DataKnots.translate(mod::Module, ::Val{$(name)}) = $(body))
+end
+
+#
+# Sometimes we wish to do dispatch by the type of input elements. For
+# example, if the input is already a date we may wish to treat it a
+# particular way, otherwise we may want to make it a date first.
+#
+
+CoalesceByType(type::DataType, query, fallback) =
+    Query(CoalesceByType, type, query, fallback)
+
+function CoalesceByType(env::Environment, p::Pipeline,
+                        type::DataType, query, fallback)
+    tgt = target(p)
+    if eltype(tgt) == type || eltype(tgt) == Vector{type}
+        return assemble(env, p, query)
+    else
+        return assemble(env, p, fallback)
+    end
 end
 
 # This is a temporary work-around till we have better naming
@@ -136,7 +155,9 @@ struct DateInterval
 end
 
 Lift(::Type{DateInterval}) =
-    DateInterval.(StartDate, coalesce.(EndDate, StartDate)) >>
+    CoalesceByType(Date, DateInterval.(It, It),
+        DateInterval.(coalesce.(StartDate, It),
+                      coalesce.(EndDate, coalesce(StartDate, It)))) >>
     Label(:date_interval)
 translate(::Module, ::Val{:date_interval}) = Lift(DateInterval)
 
@@ -147,9 +168,6 @@ lookup(ity::Type{DateInterval}, name::Symbol) =
     if name in (:start_date, :end_date)
         lift(getfield, name) |> designate(ity, Date)
     end
-
-# lookup(target(p), :start_date) !== nothing ? assemble(env, p, DatePeriod) : p
-
 
 # A common check is to see if a given date value falls
 # within a date range. Since *during* could have many sorts
