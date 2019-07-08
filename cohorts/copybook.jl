@@ -22,6 +22,17 @@ function translate_kwargs(mod, names, args)
     return translate.(Ref(mod), unpacked)
 end
 
+# So that queries can be used inside a macro without the dollar sign,
+# let's create a macro that injects a translation. This permits
+# query macros to be created and then reused later.
+
+macro define(expr)
+    @assert expr.head === Symbol("=")
+    name = Expr(:quote, expr.args[1])
+    body = :(translate($__module__, $(Expr(:quote, expr.args[2]))))
+    return :(DataKnots.translate(mod::Module, ::Val{$(name)}) = $(body))
+end
+
 # This is a temporary work-around till we have better naming
 # support in the PostgreSQL adapter. Basically, we want to be able
 # to use `concept` in a query and either access the main concept
@@ -75,6 +86,24 @@ const Person =
 
 translate(::Module, ::Val{:person}) = Person
 
+# Let's also make `condition` work globally and locally to retrieve
+# condition_occurrence records by patient. Unfortunately, `Condition`
+# is a built-in name of a type, so we won't make a native version.
+
+translate(::Module, ::Val{:condition}) =
+              CascadeGet(:condition_occurrence,
+                  :condition_occurrence_via_fpk_condition_person) >>
+              Label(:condition)
+
+translate(::Module, ::Val{:visit}) =
+              CascadeGet(:visit_occurrence,
+                  :visit_occurrence_via_fpk_visit_person) >>
+              Label(:visit)
+
+# Depending upon the type of record, the actual start date field
+# has a different name.  To make this usable, let's normalize it.
+# For procedures, let's take it as the start and ending date.
+
 const StartDate =
         CascadeGet(:start_date, :observation_period_start_date,
                        :condition_start_date, :drug_era_start_date,
@@ -95,36 +124,51 @@ const EndDate =
 
 translate(::Module, ::Val{:end_date}) = EndDate
 
-# Many query operations involve date ranges.
+# Many query operations involve date intervals. We can't use native
+# Julia range object since it's a vector, and vectors are lifted to a
+# plural value rather than treated as a tuple. That said, we could
+# create a custom type, `DateInterval`, lifted to combinators. This
+# sort of interval is inclusive of endpoints.
 
-struct DateRange
+struct DateInterval
     start_date::Date
     end_date::Date
 end
 
-DateRange(X,Y) = Lift(DateRange, (Date.(X), Date.(Y))) >>
-                 Label(:date_range)
-DateRange(X) = DateRange(X, X)
-DateRange() = DateRange(StartDate, coalesce.(EndDate, StartDate))
-lookup(ity::Type{DateRange}, name::Symbol) =
+Lift(::Type{DateInterval}) =
+    DateInterval.(StartDate, coalesce.(EndDate, StartDate)) >>
+    Label(:date_interval)
+translate(::Module, ::Val{:date_interval}) = Lift(DateInterval)
+
+translate(mod::Module, ::Val{:date_interval}, args::Tuple{Any, Any}) =
+    DateInterval.(translate.(Ref(mod), args)...)
+
+lookup(ity::Type{DateInterval}, name::Symbol) =
     if name in (:start_date, :end_date)
         lift(getfield, name) |> designate(ity, Date)
     end
-Lift(::Type{DateRange}) = DateRange()
 
-# Let's also make `condition` work globally and locally to retrieve
-# condition_occurrence records by patient. Unfortunately, `Condition`
-# is a built-in name of a type, so we won't make a native version.
+# lookup(target(p), :start_date) !== nothing ? assemble(env, p, DatePeriod) : p
 
-translate(::Module, ::Val{:condition}) =
-              CascadeGet(:condition_occurrence,
-                  :condition_occurrence_via_fpk_condition_person) >>
-              Label(:condition)
 
-translate(::Module, ::Val{:visit}) =
-              CascadeGet(:visit_occurrence,
-                  :visit_occurrence_via_fpk_visit_person) >>
-              Label(:visit)
+# A common check is to see if a given date value falls
+# within a date range. Since *during* could have many sorts
+# of interpretations, let's assert that the input is a date.
+
+During(X) =
+    Given(:index_date => Date.(It),
+          :start_date => X >> StartDate,
+          :end_date   => X >> EndDate)
+    ((It.index_date .>= It.start_date) .&
+     (It.index_date .<= It.end_date))
+
+translate(mod::Module, ::Val{:during}, args::Tuple{Any}) =
+    During(translate(mod, args)...)
+
+StartsDuring(X) = StartDate >> During(X)
+
+translate(mod::Module, ::Val{:starts_during}, args::Tuple{Any}) =
+    StartsDuring(translate(mod, args)...)
 
 # Sometimes it's useful to list the concepts ancestors.
 
@@ -207,22 +251,6 @@ ItsVisit(prior=0, after=0) =
 translate(mod::Module, ::Val{:its_visit},
           args::Tuple{Any, Any}) =
     ItsVisit(translate_kwargs(mod, (:prior, :after), args)...)
-
-#
-
-Includes(event, prior=0, after=0) =
-    Given(
-          :index_date => event >> StartDate,
-          :prior_days => Lift(Day, (prior,)),
-          :after_days => Lift(Day, (after,)),
-        (It.index_date .>= (StartDate .+ It.prior_days)) .&
-        (It.index_date .<= (EndDate .- It.after_days)))
-
-translate(mod::Module, ::Val{:includes},
-          args::Tuple{Any, Any, Any}) =
-    Includes(
-        translate_kwargs(mod, (:event, :prior, :after), args)...)
-
 
 # This creates our test database for us.
 
