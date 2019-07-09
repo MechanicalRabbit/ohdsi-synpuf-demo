@@ -207,6 +207,12 @@ Includes(Y) =
 translate(mod::Module, ::Val{:includes}, args::Tuple{Any}) =
     Includes(translate.(Ref(mod), args)...)
 
+translate(mod::Module, ::Val{:with}, args::Tuple{Any}) =
+    Filter(Exists(translate.(Ref(mod), args)...))
+
+translate(mod::Module, ::Val{:without}, args::Tuple{Any}) =
+    Filter(.! Exists(translate.(Ref(mod), args)...))
+
 # Sometimes it's useful to list the concepts ancestors.
 
 AncestorConcept =
