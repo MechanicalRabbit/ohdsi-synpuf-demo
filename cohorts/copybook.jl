@@ -1,6 +1,7 @@
 using Dates, LibPQ, DataKnots, DataKnots4Postgres
-using DataKnots: Query, Environment, Pipeline, target, lookup, cover,
-                 lift, compose, syntaxof, relabel, assemble, designate
+using DataKnots: Query, Environment, Pipeline, ValueOf, BlockOf,
+                 target, lookup, cover, uncover, lift, compose,
+                 syntaxof, relabel, assemble, designate, fits
 import DataKnots: translate, lookup, Lift
 
 # For the macro variants of some combinators here, we wish to permit
@@ -39,17 +40,17 @@ end
 # particular way, otherwise we may want to make it a date first.
 #
 
-CoalesceByType(type::DataType, query, fallback) =
-    Query(CoalesceByType, type, query, fallback)
+DispatchByType(tests::Pair{DataType}...; fallback) =
+    Query(DispatchByType, fallback, collect(Pair{DataType}, tests))
 
-function CoalesceByType(env::Environment, p::Pipeline,
-                        type::DataType, query, fallback)
-    tgt = target(p)
-    if eltype(tgt) == type || eltype(tgt) == Vector{type}
-        return assemble(env, p, query)
-    else
-        return assemble(env, p, fallback)
+function DispatchByType(env::Environment, p::Pipeline, fallback,
+                        tests::Vector{Pair{DataType}})
+    for (typ, query) in tests
+        if fits(target(uncover(p)), BlockOf(ValueOf(typ)))
+            return assemble(env, p, query)
+        end
     end
+    return assemble(env, p, fallback)
 end
 
 # This is a temporary work-around till we have better naming
@@ -155,8 +156,9 @@ struct DateInterval
 end
 
 Lift(::Type{DateInterval}) =
-    CoalesceByType(Date, DateInterval.(It, It),
-        DateInterval.(coalesce.(StartDate, It),
+    DispatchByType(Date => DateInterval.(It, It);
+                   fallback = DateInterval.(
+                      coalesce.(StartDate, It),
                       coalesce.(EndDate, coalesce(StartDate, It)))) >>
     Label(:date_interval)
 translate(::Module, ::Val{:date_interval}) = Lift(DateInterval)
@@ -168,6 +170,31 @@ lookup(ity::Type{DateInterval}, name::Symbol) =
     if name in (:start_date, :end_date)
         lift(getfield, name) |> designate(ity, Date)
     end
+
+"""
+X >> Includes(Y)
+
+This combinator is true if the interval of `Y` is completely included
+in the interval for `X`.  That is, if the starting point of `Y` is
+greater than or equal to the starting point of `X`, and also if the
+ending point of `Y` is less than or equal to the ending point of `X`.
+
+This combinator accepts a `DateInterval` for its arguments, but also
+any object that has `StartDate` and `EndDate` defined. If `EndDate`
+is missing, then it is treated the same as the `StartDate`. This is
+not great behavior but it is consistent with existing OHDSI code.
+"""
+Includes(Y) =
+    Given(:interval =>
+              DispatchByType(DateInterval => It;
+                             fallback =
+                                 DateInterval.(StartDate,
+                                     coalesce.(EndDate, StartDate))),
+          :start_date => It.interval >> It.start_date,
+          :end_date   => It.interval >> it.end_date,
+          Y >> DispatchByType(Date  => ((It .>= It.start_date) .&
+                                        (It .<= It.end_date));
+                              fallback = It))
 
 # A common check is to see if a given date value falls
 # within a date range. Since *during* could have many sorts
