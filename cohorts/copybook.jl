@@ -190,11 +190,13 @@ Includes(Y) =
                              fallback =
                                  DateInterval.(StartDate,
                                      coalesce.(EndDate, StartDate))),
-          :start_date => It.interval >> It.start_date,
-          :end_date   => It.interval >> it.end_date,
-          Y >> DispatchByType(Date  => ((It .>= It.start_date) .&
-                                        (It .<= It.end_date));
-                              fallback = It))
+          :start => It.interval >> It.start_date,
+          :enddt => It.interval >> It.end_date,
+          Y >> DispatchByType(Date  => ((It .>= It.start) .&
+                                        (It .<= It.enddt));
+                              fallback =
+                                  ((StartDate .>= It.start) .&
+                                   (EndDate .<= It.enddt))))
 
 # A common check is to see if a given date value falls
 # within a date range. Since *during* could have many sorts
