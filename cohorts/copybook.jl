@@ -191,19 +191,18 @@ is missing, then it is treated the same as the `StartDate`. This is
 not great behavior but it is consistent with existing OHDSI code.
 """
 Includes(Y) =
-    Given(:interval =>
-              DispatchByType(DateInterval => It;
-                             fallback =
-                                 DateInterval.(StartDate,
-                                    coalesce.(EndDate, StartDate))),
-          :start => It.interval >> It.start_date,
-          :enddt => It.interval >> It.end_date,
-          Y >> DispatchByType(Date  => ((It .>= It.start) .&
-                                        (It .<= It.enddt));
+    Given(:period =>
+             DispatchByType(DateInterval => It;
+                            fallback =
+                              DateInterval.(StartDate,
+                                coalesce.(EndDate, StartDate))),
+          Y >> DispatchByType(Date  => ((It .>= It.period.start_date) .&
+                                        (It .<= It.period.end_date));
                               fallback =
-                                  ((StartDate .>= It.start) .&
-                                   (coalesce.(EndDate, StartDate) .<=
-                                    coalesce.(It.enddt, It.start)))))
+                                ((StartDate .>= It.period.start_date) .&
+                                 (coalesce.(EndDate, StartDate) .<=
+                                  coalesce.(It.period.end_date,
+                                            It.period.start_date)))))
 
 translate(mod::Module, ::Val{:includes}, args::Tuple{Any}) =
     Includes(translate.(Ref(mod), args)...)
@@ -243,52 +242,6 @@ translate(mod::Module, ::Val{:iscoded}, args::Tuple{Any,Vararg{Any}}) =
 # be a constant of 1 day.
 
 translate(::Module, ::Val{:days}) = Dates.Day(1)
-
-# For various kinds of events, we're after how the start of one
-# occurs within the start/end of another. Here, the `StartDate` of
-# the event, such as a condition, is the index date upon which
-# comparisons are made.
-
-StartsWithin(X, prior=0, after=0) =
-    Given(:index_date => StartDate,
-          :prior_days => Lift(Day, (prior,)),
-          :after_days => Lift(Day, (after,)),
-        X >>
-        Filter((It.index_date .>= (StartDate .+ It.prior_days)) .&
-               (It.index_date .<= (EndDate .- It.after_days))))
-
-translate(mod::Module, ::Val{:starts_within},
-          args::Tuple{Any, Any}) =
-    StartsWithin(
-        translate_kwargs(mod, (:event, :prior, :after), args)...)
-
-# For various kinds of events, such as condition occurrences or drug
-# exposures, we remark if it starts within an observation period.
-# It is possible for an event to not be associated with an observation
-# period, see https://github.com/OHDSI/Themis/issues/23
-
-ItsObservationPeriod(prior=0, after=0) =
-    Is0to1(StartsWithin(Person >> ObservationPeriod, prior, after))
-
-translate(mod::Module, ::Val{:its_observation_period},
-          args::Tuple{Any, Any}) =
-    ItsObservationPeriod(
-        translate_kwargs(mod, (:prior, :after), args)...)
-
-# For various events, we could compute visits that overlap it,
-# requiring the visit starts a certin time prior to when the event
-# starts (the index date) and a certain time after it starts. The
-# prior/after padding is how much the visit should start before and
-# extend after the index date.
-
-ItsVisit(prior=0, after=0) =
-    Given(:ob => ItsObservationPeriod(),
-        StartsWithin(Person >> Visit, prior, after)
-        >> Filter(It.ob .== ItsObservationPeriod()))
-
-translate(mod::Module, ::Val{:its_visit},
-          args::Tuple{Any, Any}) =
-    ItsVisit(translate_kwargs(mod, (:prior, :after), args)...)
 
 # This creates our test database for us.
 
