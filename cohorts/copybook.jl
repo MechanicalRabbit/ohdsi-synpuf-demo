@@ -200,24 +200,8 @@ Includes(Y) =
                                    (coalesce.(EndDate, It.empty) .<=
                                     coalesce.(It.enddt, It.empty)))))
 
-# A common check is to see if a given date value falls
-# within a date range. Since *during* could have many sorts
-# of interpretations, let's assert that the input is a date.
-
-During(X) =
-    Given(:index_date => Date.(It),
-          :start_date => X >> StartDate,
-          :end_date   => X >> EndDate)
-    ((It.index_date .>= It.start_date) .&
-     (It.index_date .<= It.end_date))
-
-translate(mod::Module, ::Val{:during}, args::Tuple{Any}) =
-    During(translate(mod, args)...)
-
-StartsDuring(X) = StartDate >> During(X)
-
-translate(mod::Module, ::Val{:starts_during}, args::Tuple{Any}) =
-    StartsDuring(translate(mod, args)...)
+translate(mod::Module, ::Val{:includes}, args::Tuple{Any}) =
+    Includes(translate.(Ref(mod), args)...)
 
 # Sometimes it's useful to list the concepts ancestors.
 
