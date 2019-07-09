@@ -192,11 +192,13 @@ Includes(Y) =
                                      coalesce.(EndDate, StartDate))),
           :start => It.interval >> It.start_date,
           :enddt => It.interval >> It.end_date,
+          :empty => Lift(Date, ("1999-12-31",)),
           Y >> DispatchByType(Date  => ((It .>= It.start) .&
                                         (It .<= It.enddt));
                               fallback =
                                   ((StartDate .>= It.start) .&
-                                   (EndDate .<= It.enddt))))
+                                   (coalesce.(EndDate, It.empty) .<=
+                                    coalesce.(It.enddt, It.empty)))))
 
 # A common check is to see if a given date value falls
 # within a date range. Since *during* could have many sorts
