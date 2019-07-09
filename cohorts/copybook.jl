@@ -152,14 +152,13 @@ translate(::Module, ::Val{:end_date}) = EndDate
 
 struct DateInterval
     start_date::Date
-    end_date::Date
+    end_date::Union{Missing, Date}
 end
 
 Lift(::Type{DateInterval}) =
-    DispatchByType(Date => DateInterval.(It, It);
-                   fallback = DateInterval.(
-                      coalesce.(StartDate, It),
-                      coalesce.(EndDate, coalesce(StartDate, It)))) >>
+    DispatchByType(DateInterval => It,
+                   Date => DateInterval.(It, It);
+                   fallback = DateInterval.(StartDate, EndDate)) >>
     Label(:date_interval)
 translate(::Module, ::Val{:date_interval}) = Lift(DateInterval)
 
@@ -170,6 +169,13 @@ lookup(ity::Type{DateInterval}, name::Symbol) =
     if name in (:start_date, :end_date)
         lift(getfield, name) |> designate(ity, Date)
     end
+
+includes(period::DateInterval, val::Date) =
+    period.start_date >= val >= period.end_date
+
+includes(period::DateInterval, val::DateInterval) =
+   (period.start_date >= val.start_date) &&
+   (val.end_date >= period.end_date)
 
 """
 X >> Includes(Y)
@@ -189,16 +195,15 @@ Includes(Y) =
               DispatchByType(DateInterval => It;
                              fallback =
                                  DateInterval.(StartDate,
-                                     coalesce.(EndDate, StartDate))),
+                                    coalesce.(EndDate, StartDate))),
           :start => It.interval >> It.start_date,
           :enddt => It.interval >> It.end_date,
-          :empty => Lift(Date, ("1999-12-31",)),
           Y >> DispatchByType(Date  => ((It .>= It.start) .&
                                         (It .<= It.enddt));
                               fallback =
                                   ((StartDate .>= It.start) .&
-                                   (coalesce.(EndDate, It.empty) .<=
-                                    coalesce.(It.enddt, It.empty)))))
+                                   (coalesce.(EndDate, StartDate) .<=
+                                    coalesce.(It.enddt, It.start)))))
 
 translate(mod::Module, ::Val{:includes}, args::Tuple{Any}) =
     Includes(translate.(Ref(mod), args)...)
