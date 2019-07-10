@@ -40,17 +40,17 @@ end
 # particular way, otherwise we may want to make it a date first.
 #
 
-DispatchByType(tests::Pair{DataType}...; fallback) =
-    Query(DispatchByType, fallback, collect(Pair{DataType}, tests))
+DispatchByType(tests::Pair{DataType}...) =
+    Query(DispatchByType, collect(Pair{DataType}, tests))
 
-function DispatchByType(env::Environment, p::Pipeline, fallback,
+function DispatchByType(env::Environment, p::Pipeline,
                         tests::Vector{Pair{DataType}})
     for (typ, query) in tests
         if fits(target(uncover(p)), BlockOf(ValueOf(typ)))
             return assemble(env, p, query)
         end
     end
-    return assemble(env, p, fallback)
+    error("doesn't match any type: $(syntaxof(target(p)))")
 end
 
 # This is a temporary work-around till we have better naming
@@ -157,8 +157,8 @@ end
 
 Lift(::Type{DateInterval}) =
     DispatchByType(DateInterval => It,
-                   Date => DateInterval.(It, It);
-                   fallback = DateInterval.(StartDate, EndDate)) >>
+                   Date => DateInterval.(It, It),
+                   Any => DateInterval.(StartDate, EndDate)) >>
     Label(:date_interval)
 translate(::Module, ::Val{:date_interval}) = Lift(DateInterval)
 
@@ -192,13 +192,11 @@ not great behavior but it is consistent with existing OHDSI code.
 """
 Includes(Y) =
     Given(:period =>
-             DispatchByType(DateInterval => It;
-                            fallback =
-                              DateInterval.(StartDate,
-                                coalesce.(EndDate, StartDate))),
+             DispatchByType(DateInterval => It,
+                            Any => It >> DateInterval),
           Y >> DispatchByType(Date  => ((It .>= It.period.start_date) .&
-                                        (It .<= It.period.end_date));
-                              fallback =
+                                        (It .<= It.period.end_date)),
+                              Any =>
                                 ((StartDate .>= It.period.start_date) .&
                                  (coalesce.(EndDate, StartDate) .<=
                                   coalesce.(It.period.end_date,
