@@ -207,6 +207,11 @@ Includes(Y) =
 translate(mod::Module, ::Val{:includes}, args::Tuple{Any}) =
     Includes(translate.(Ref(mod), args)...)
 
+During(Y) = Given(:saved => It, Y >> Includes(It.saved))
+
+translate(mod::Module, ::Val{:during}, args::Tuple{Any}) =
+    During(translate.(Ref(mod), args)...)
+
 # Sometimes it's useful to list the concepts ancestors.
 
 AncestorConcept =
