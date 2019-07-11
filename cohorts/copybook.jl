@@ -124,7 +124,7 @@ translate(::Module, ::Val{:visit}) =
 translate(::Module, ::Val{:drug_exposure}) =
               CascadeGet(:drug_exposure,
                   :drug_exposure_via_fpk_drug_person) >>
-              Label(:drug)
+              Label(:drug_exposure)
 
 # Depending upon the type of record, the actual start date field
 # has a different name.  To make this usable, let's normalize it.
