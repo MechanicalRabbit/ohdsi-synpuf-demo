@@ -96,3 +96,39 @@ Let's consider specified visit types.
      ⋮
     =#
 
+## Temporal Functions
+
+    @query sp10 Date("2008-04-10").includes(Date("2008-04-10"))
+    #=>
+    ┼──────┼
+    │ true │
+    =#
+
+    @query sp10 DateInterval("2008-04-08","2008-04-11").
+                    includes(Date("2008-04-10"))
+    #=>
+    ERROR: ⋮
+    =#
+
+    @query sp10 begin
+         visit.filter(includes(Date("2008-04-10")))
+         { it, start_date, end_date }
+    end
+    #=>
+      │ visit                         │
+      │ visit  start_date  end_date   │
+    ──┼───────────────────────────────┼
+    1 │ 88179  2008-04-09  2008-04-13 │
+    2 │ 88246  2008-04-10  2008-04-10 │
+    =#
+
+    @query sp10 begin
+         visit.filter(start_date.includes(Date("2008-04-10")))
+         { it, start_date, end_date }
+    end
+    #=>
+      │ visit                         │
+      │ visit  start_date  end_date   │
+    ──┼───────────────────────────────┼
+    1 │ 88246  2008-04-10  2008-04-10 │
+    =#
