@@ -183,8 +183,8 @@ includes(period::DateInterval, val::Date) =
     period.end_date >= val >= period.start_date
 
 includes(period::DateInterval, val::DateInterval) =
-   (period.start_date >= val.start_date) &&
-   (val.end_date >= period.end_date)
+   (val.start_date >= period.start_date) &&
+   (period.end_date >= val.end_date)
 
 
 """
@@ -205,11 +205,10 @@ Includes(Y) =
              DispatchByType(DateInterval => It,
                             Any => It >> DateInterval),
           Y >> DispatchByType(Date => includes.(It.period, It),
-                              Any =>
-                                ((StartDate .>= It.period.start_date) .&
-                                 (coalesce.(EndDate, StartDate) .<=
-                                  coalesce.(It.period.end_date,
-                                            It.period.start_date)))))
+                              Any => includes.(It.period,
+                                        DateInterval.(StartDate,
+                                        coalesce.(EndDate,
+                                                  StartDate)))))
 
 translate(mod::Module, ::Val{:includes}, args::Tuple{Any}) =
     Includes(translate.(Ref(mod), args)...)
