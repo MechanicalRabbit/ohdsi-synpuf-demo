@@ -3,6 +3,7 @@ using DataKnots: Query, Environment, Pipeline, ValueOf, BlockOf,
                  target, lookup, cover, uncover, lift, compose,
                  syntaxof, relabel, assemble, designate, fits
 import DataKnots: translate, lookup, Lift
+import Base: show
 
 # For the macro variants of some combinators here, we wish to permit
 # keyword arguments to be used. This macro translation does this.
@@ -160,21 +161,29 @@ struct DateInterval
     start_date::Date
     end_date::Date
 end
+Base.show(io::IO, i::DateInterval) =
+    print(io, "$(i.start_date) to $(i.end_date)")
+
+DateInterval(start_date::String, end_date::String) =
+    DateInterval(Date(start_date), Date(end_date))
+translate(mod::Module, ::Val{:date_interval}, args::Tuple{Any, Any}) =
+    DateInterval.(translate.(Ref(mod), args)...)
 
 Lift(::Type{DateInterval}) =
     DispatchByType(DateInterval => It,
                    Date => DateInterval.(It, It),
+                   String => DateInterval.(Date.(It), Date.(It)),
                    Any => DateInterval.(StartDate, EndDate)) >>
     Label(:date_interval)
 translate(::Module, ::Val{:date_interval}) = Lift(DateInterval)
-
-translate(mod::Module, ::Val{:date_interval}, args::Tuple{Any, Any}) =
-    DateInterval.(translate.(Ref(mod), args)...)
 
 lookup(ity::Type{DateInterval}, name::Symbol) =
     if name in (:start_date, :end_date)
         lift(getfield, name) |> designate(ity, Date)
     end
+
+includes(period::DateInterval, val::String) =
+    includes(period, Date(val))
 
 includes(period::DateInterval, val::Date) =
     period.end_date >= val >= period.start_date

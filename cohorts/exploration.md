@@ -98,21 +98,21 @@ Let's consider specified visit types.
 
 ## Temporal Functions
 
-    @query sp10 Date("2008-04-10").includes(Date("2008-04-10"))
+    @query sp10 Date("2008-04-10").includes("2008-04-10")
     #=>
     ┼──────┼
     │ true │
     =#
 
-    @query sp10 DateInterval(Date("2008-04-08"), Date("2008-04-11")).
-                    includes(Date("2008-04-10"))
+    @query sp10 DateInterval("2008-04-08", "2008-04-11").
+                    includes("2008-04-10")
     #=>
     ┼──────┼
     │ true │
     =#
 
     @query sp10 begin
-         visit.filter(includes(Date("2008-04-10")))
+         visit.filter(includes("2008-04-10"))
          { it, start_date, end_date }
     end
     #=>
@@ -124,7 +124,7 @@ Let's consider specified visit types.
     =#
 
     @query sp10 begin
-         visit.filter(start_date.includes(Date("2008-04-10")))
+         visit.filter(start_date.includes("2008-04-10"))
          { it, start_date, end_date }
     end
     #=>
