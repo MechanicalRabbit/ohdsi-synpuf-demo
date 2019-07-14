@@ -159,10 +159,6 @@ translate(::Module, ::Val{:end_date}) = EndDate
 struct DateInterval
     start_date::Date
     end_date::Date
-
-#    DateInterval(s::String, e::String) = new(Date(s), Date(e))
-#    DateInterval(s::String) = new(Date(s), missing)
-#    DateInterval(d::Date) = new(d, d)
 end
 
 Lift(::Type{DateInterval}) =
@@ -187,7 +183,6 @@ includes(period::DateInterval, val::DateInterval) =
    (val.start_date >= period.start_date) &&
    (period.end_date >= val.end_date)
 
-
 """
 X >> Includes(Y)
 
@@ -195,19 +190,14 @@ This combinator is true if the interval of `Y` is completely included
 in the interval for `X`.  That is, if the starting point of `Y` is
 greater than or equal to the starting point of `X`, and also if the
 ending point of `Y` is less than or equal to the ending point of `X`.
-
 This combinator accepts a `DateInterval` for its arguments, but also
-any object that has `StartDate` and `EndDate` defined. If `EndDate`
-is missing, then it is treated the same as the `StartDate`. This is
-not great behavior but it is consistent with existing OHDSI code.
+any object that has `StartDate` and `EndDate` defined.
 """
 Includes(Y) = includes.(It >> DateInterval, Y >> DateInterval)
-
 translate(mod::Module, ::Val{:includes}, args::Tuple{Any}) =
     Includes(translate.(Ref(mod), args)...)
 
-During(Y) = Given(:saved => It, Y >> Includes(It.saved))
-
+During(Y) = includes.(Y >> DateInterval, It >> DateInterval)
 translate(mod::Module, ::Val{:during}, args::Tuple{Any}) =
     During(translate.(Ref(mod), args)...)
 

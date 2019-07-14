@@ -104,10 +104,11 @@ Let's consider specified visit types.
     │ true │
     =#
 
-    @query sp10 DateInterval("2008-04-08","2008-04-11").
+    @query sp10 DateInterval(Date("2008-04-08"), Date("2008-04-11")).
                     includes(Date("2008-04-10"))
     #=>
-    ERROR: ⋮
+    ┼──────┼
+    │ true │
     =#
 
     @query sp10 begin
