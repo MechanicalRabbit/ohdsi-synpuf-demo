@@ -162,6 +162,7 @@ struct DateInterval
 
 #    DateInterval(s::String, e::String) = new(Date(s), Date(e))
 #    DateInterval(s::String) = new(Date(s), missing)
+#    DateInterval(d::Date) = new(d, d)
 end
 
 Lift(::Type{DateInterval}) =
@@ -203,12 +204,15 @@ not great behavior but it is consistent with existing OHDSI code.
 Includes(Y) =
     Given(:period =>
              DispatchByType(DateInterval => It,
-                            Any => It >> DateInterval),
-          Y >> DispatchByType(Date => includes.(It.period, It),
-                              Any => includes.(It.period,
-                                        DateInterval.(StartDate,
-                                        coalesce.(EndDate,
-                                                  StartDate)))))
+                            Date => DateInterval.(It, It),
+                            Any => DateInterval.(StartDate, EndDate)),
+          :testcase =>
+              Y >> DispatchByType(DateInterval => It,
+                                  Date => DateInterval.(It, It),
+                                  Any => DateInterval.(StartDate,
+                                            coalesce.(EndDate,
+                                                      StartDate))),
+              includes.(It.period, It.testcase))
 
 translate(mod::Module, ::Val{:includes}, args::Tuple{Any}) =
     Includes(translate.(Ref(mod), args)...)
