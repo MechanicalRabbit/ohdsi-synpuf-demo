@@ -201,18 +201,7 @@ any object that has `StartDate` and `EndDate` defined. If `EndDate`
 is missing, then it is treated the same as the `StartDate`. This is
 not great behavior but it is consistent with existing OHDSI code.
 """
-Includes(Y) =
-    Given(:period =>
-             DispatchByType(DateInterval => It,
-                            Date => DateInterval.(It, It),
-                            Any => DateInterval.(StartDate, EndDate)),
-          :testcase =>
-              Y >> DispatchByType(DateInterval => It,
-                                  Date => DateInterval.(It, It),
-                                  Any => DateInterval.(StartDate,
-                                            coalesce.(EndDate,
-                                                      StartDate))),
-              includes.(It.period, It.testcase))
+Includes(Y) = includes.(It >> DateInterval, Y >> DateInterval)
 
 translate(mod::Module, ::Val{:includes}, args::Tuple{Any}) =
     Includes(translate.(Ref(mod), args)...)
