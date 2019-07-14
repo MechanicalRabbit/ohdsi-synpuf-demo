@@ -180,11 +180,12 @@ lookup(ity::Type{DateInterval}, name::Symbol) =
     end
 
 includes(period::DateInterval, val::Date) =
-    period.start_date >= val >= period.end_date
+    period.end_date >= val >= period.start_date
 
 includes(period::DateInterval, val::DateInterval) =
    (period.start_date >= val.start_date) &&
    (val.end_date >= period.end_date)
+
 
 """
 X >> Includes(Y)
@@ -203,8 +204,7 @@ Includes(Y) =
     Given(:period =>
              DispatchByType(DateInterval => It,
                             Any => It >> DateInterval),
-          Y >> DispatchByType(Date  => ((It .>= It.period.start_date) .&
-                                        (It .<= It.period.end_date)),
+          Y >> DispatchByType(Date => includes.(It.period, It),
                               Any =>
                                 ((StartDate .>= It.period.start_date) .&
                                  (coalesce.(EndDate, StartDate) .<=
