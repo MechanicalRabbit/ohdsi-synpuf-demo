@@ -158,7 +158,7 @@ translate(::Module, ::Val{:end_date}) = EndDate
 
 struct DateInterval
     start_date::Date
-    end_date::Union{Missing, Date}
+    end_date::Date
 
 #    DateInterval(s::String, e::String) = new(Date(s), Date(e))
 #    DateInterval(s::String) = new(Date(s), missing)
