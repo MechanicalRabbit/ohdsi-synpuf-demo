@@ -83,11 +83,19 @@ const ObservationPeriod =
 translate(::Module, ::Val{:observation_period}) = ObservationPeriod
 
 const Visit =
-    CascadeGet(:visit_occurrence,
-               :visit_occurrence_via_fpk_visit_person) >>
+    CascadeGet(:visit, :fpk_drug_visit, :visit_occurrence,
+               :visit_occurrence_via_fpk_visit_person,
+               :visit_occurrence_via_fpk_drug_visit) >>
     Label(:visit)
 
 translate(::Module, ::Val{:visit}) = Visit
+
+const DrugExposure =
+    CascadeGet(:drug_exposure,
+              :drug_exposure_via_fpk_drug_person) >>
+    Label(:drug_exposure)
+
+translate(::Module, ::Val{:drug_exposure}) = DrugExposure
 
 const Concept =
     CascadeGet(:concept, :fpk_observation_concept,
@@ -115,17 +123,6 @@ translate(::Module, ::Val{:condition}) =
               CascadeGet(:condition_occurrence,
                   :condition_occurrence_via_fpk_condition_person) >>
               Label(:condition)
-
-translate(::Module, ::Val{:visit}) =
-              CascadeGet(:visit_occurrence, :fpk_drug_visit,
-                  :visit_occurrence_via_fpk_visit_person,
-                  :visit_occurrence_via_fpk_drug_visit) >>
-              Label(:visit)
-
-translate(::Module, ::Val{:drug_exposure}) =
-              CascadeGet(:drug_exposure,
-                  :drug_exposure_via_fpk_drug_person) >>
-              Label(:drug_exposure)
 
 # Depending upon the type of record, the actual start date field
 # has a different name.  To make this usable, let's normalize it.
@@ -191,6 +188,34 @@ includes(period::DateInterval, val::Date) =
 includes(period::DateInterval, val::DateInterval) =
    (val.start_date >= period.start_date) &&
    (period.end_date >= val.end_date)
+
+"""
+    collapse(intervals, allowance)
+
+This function collapses a vector of intervals based upon an
+allowance, such as 180days between the end of a previous interval,
+and the start of the next.
+"""
+function collapse(intervals::Vector{DateInterval}, allowance::Day)
+    intervals′ = Vector{DateInterval}()
+    c = nothing
+    for i in sort(intervals, by=(i -> i.start_date))
+        if c === nothing
+            c = i
+        elseif c.end_date + allowance < i.start_date
+            push!(intervals′, c)
+            c = i
+        elseif c.end_date < i.end_date
+            c = DateInterval(c.start_date, i.end_date)
+        end
+    end
+    if c !== nothing
+        push!(intervals′, c)
+    end
+    intervals′
+end
+translate(mod::Module, ::Val{:collapse}, args::Tuple{Any, Any}) =
+    collapse.(translate.(Ref(mod), args)...)
 
 """
 X >> Includes(Y)
