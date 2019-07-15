@@ -215,9 +215,17 @@ function collapse_intervals(intervals::Vector{DateInterval},
     end
     intervals′
 end
+
+CollapseIntervals(I, A) = collapse_intervals.(I, A)
+CollapseIntervals(A) = DataKnots.Then(CollapseIntervals, (A,))
+
 translate(mod::Module, ::Val{:collapse_intervals},
           args::Tuple{Any, Any}) =
-    collapse_intervals.(translate.(Ref(mod), args)...)
+    CollapseIntervals(translate.(Ref(mod), args)...)
+
+translate(mod::Module, ::Val{:collapse_intervals},
+          args::Tuple{Any}) =
+    CollapseIntervals(translate.(Ref(mod), args)...)
 
 """
 X >> Includes(Y)
