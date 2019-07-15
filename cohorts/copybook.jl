@@ -120,7 +120,7 @@ translate(::Module, ::Val{:person}) = Person
 # is a built-in name of a type, so we won't make a native version.
 
 translate(::Module, ::Val{:condition}) =
-              CascadeGet(:condition_occurrence,
+              CascadeGet(:condition, :condition_occurrence,
                   :condition_occurrence_via_fpk_condition_person) >>
               Label(:condition)
 
@@ -190,13 +190,14 @@ includes(period::DateInterval, val::DateInterval) =
    (period.end_date >= val.end_date)
 
 """
-    collapse(intervals, allowance)
+    collapse_intervals(intervals, allowance)
 
 This function collapses a vector of intervals based upon an
 allowance, such as 180days between the end of a previous interval,
 and the start of the next.
 """
-function collapse(intervals::Vector{DateInterval}, allowance::Day)
+function collapse_intervals(intervals::Vector{DateInterval},
+                            allowance::Day)
     intervals′ = Vector{DateInterval}()
     c = nothing
     for i in sort(intervals, by=(i -> i.start_date))
@@ -214,8 +215,9 @@ function collapse(intervals::Vector{DateInterval}, allowance::Day)
     end
     intervals′
 end
-translate(mod::Module, ::Val{:collapse}, args::Tuple{Any, Any}) =
-    collapse.(translate.(Ref(mod), args)...)
+translate(mod::Module, ::Val{:collapse_intervals},
+          args::Tuple{Any, Any}) =
+    collapse_intervals.(translate.(Ref(mod), args)...)
 
 """
 X >> Includes(Y)
