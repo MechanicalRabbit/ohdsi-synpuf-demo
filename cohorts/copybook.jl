@@ -124,6 +124,10 @@ translate(::Module, ::Val{:condition}) =
                   :condition_occurrence_via_fpk_condition_person) >>
               Label(:condition)
 
+translate(::Module, ::Val{:days_supply}) =
+              Get(:days_supply) .* Dates.Day(1)
+              Label(:days_supply)
+
 # Depending upon the type of record, the actual start date field
 # has a different name.  To make this usable, let's normalize it.
 # For procedures, let's take it as the start and ending date.
@@ -280,6 +284,14 @@ translate(mod::Module, ::Val{:iscoded}, args::Tuple{Any,Vararg{Any}}) =
 # be a constant of 1 day.
 
 translate(::Module, ::Val{:days}) = Dates.Day(1)
+
+# Temporary sort since it's not implemented yet, it happens that
+# group provides the functionality needed though.
+
+Sort(X) = Given(:source => It, Group(X) >> It.source)
+
+translate(mod::Module, ::Val{:sort}, args::Tuple{Any}) =
+    Sort(translate.(Ref(mod), args)...)
 
 # This creates our test database for us.
 
