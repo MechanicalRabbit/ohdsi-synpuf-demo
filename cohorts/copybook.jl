@@ -1,8 +1,9 @@
 using Dates, LibPQ, DataKnots, DataKnots4Postgres
 using DataKnots: Query, Environment, Pipeline, ValueOf, BlockOf,
                  target, lookup, cover, uncover, lift, compose,
-                 syntaxof, relabel, assemble, designate, fits
-import DataKnots: translate, lookup, Lift
+                 syntaxof, relabel, assemble, designate, fits,
+                 relabel
+import DataKnots: translate, lookup, Lift, Label
 import Base: show
 
 # For the macro variants of some combinators here, we wish to permit
@@ -288,7 +289,12 @@ translate(::Module, ::Val{:days}) = Dates.Day(1)
 # Temporary sort since it's not implemented yet, it happens that
 # group provides the functionality needed though.
 
-Sort(X) = Given(:source => It, Group(X) >> It.source)
+DataKnots.Label(::Nothing) = Query(Label, nothing); 
+DataKnots.Label(::Environment, p::Pipeline, ::Nothing) = 
+    relabel(p, nothing)
+
+Sort(X) = Given(:source => It, 
+                Group(X) >> It.source >> Label(nothing))
 
 translate(mod::Module, ::Val{:sort}, args::Tuple{Any}) =
     Sort(translate.(Ref(mod), args)...)
