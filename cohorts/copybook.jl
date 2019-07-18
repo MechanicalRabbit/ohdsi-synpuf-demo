@@ -98,6 +98,13 @@ const DrugExposure =
 
 translate(::Module, ::Val{:drug_exposure}) = DrugExposure
 
+const DrugEra =
+    CascadeGet(:drug_era,
+              :drug_era_via_fpk_drug_era_person) >>
+    Label(:drug_era)
+
+translate(::Module, ::Val{:drug_era}) = DrugEra
+
 const Concept =
     CascadeGet(:concept, :fpk_observation_concept,
                :fpk_visit_concept, :fpk_condition_concept,
