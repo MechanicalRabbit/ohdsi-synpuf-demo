@@ -251,18 +251,12 @@ ending point of `Y` is less than or equal to the ending point of `X`.
 This combinator accepts a `DateInterval` for its arguments, but also
 any object that has `StartDate` and `EndDate` defined.
 """
-Includes(O, Y) = includes.(It >> DateInterval >> O, Y >> DateInterval)
 Includes(Y) = includes.(It >> DateInterval, Y >> DateInterval)
 translate(mod::Module, ::Val{:includes}, args::Tuple{Any}) =
     Includes(translate.(Ref(mod), args)...)
-translate(mod::Module, ::Val{:includes}, args::Tuple{Any, Any}) =
-    Includes(translate.(Ref(mod), args)...)
 
-During(O, Y) = includes.(Y >> DateInterval, It >> DateInterval >> O)
 During(Y) = includes.(Y >> DateInterval, It >> DateInterval)
 translate(mod::Module, ::Val{:during}, args::Tuple{Any}) =
-    During(translate.(Ref(mod), args)...)
-translate(mod::Module, ::Val{:during}, args::Tuple{Any, Any}) =
     During(translate.(Ref(mod), args)...)
 
 AndPrior(Y) = and_prior.(It >> DateInterval, Lift(Day, (Y,)))

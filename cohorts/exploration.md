@@ -213,19 +213,3 @@ Let's consider specified visit types.
     26 │ 5314690  13769242           │
     27 │ 5314696  13769260           │
     =#
-
-    @query sp10 visit.keep(it){ it,
-                   person.condition.filter(
-                        start_date.during(and_prior(3days), visit)) }
-    #=>
-       │ visit              │
-       │ visit    condition │
-    ───┼────────────────────┼
-     1 │ 88179              │
-     2 │ 88214              │
-     3 │ 88246              │
-     4 │ 88263              │
-     5 │ 1454883  3767773   │
-     ⋮
-    =#
-
