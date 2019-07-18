@@ -194,6 +194,15 @@ includes(period::DateInterval, val::DateInterval) =
    (val.start_date >= period.start_date) &&
    (period.end_date >= val.end_date)
 
+and_prior(init::Date, len::Day) =
+    DateInterval(init - len, init)
+and_subsequent(init::Date, len::Day) =
+    DateInterval(init, init + len)
+and_prior(di::DateInterval, len::Day) =
+    DateInterval(di.start_date - len, di.end_date)
+and_subsequent(di::DateInterval, len::Day) =
+    DateInterval(di.start_date, di.end_date + len)
+
 """
     collapse_intervals(intervals, allowance)
 
@@ -242,13 +251,27 @@ ending point of `Y` is less than or equal to the ending point of `X`.
 This combinator accepts a `DateInterval` for its arguments, but also
 any object that has `StartDate` and `EndDate` defined.
 """
+Includes(O, Y) = includes.(It >> DateInterval >> O, Y >> DateInterval)
 Includes(Y) = includes.(It >> DateInterval, Y >> DateInterval)
 translate(mod::Module, ::Val{:includes}, args::Tuple{Any}) =
     Includes(translate.(Ref(mod), args)...)
+translate(mod::Module, ::Val{:includes}, args::Tuple{Any, Any}) =
+    Includes(translate.(Ref(mod), args)...)
 
+During(O, Y) = includes.(Y >> DateInterval, It >> DateInterval >> O)
 During(Y) = includes.(Y >> DateInterval, It >> DateInterval)
 translate(mod::Module, ::Val{:during}, args::Tuple{Any}) =
     During(translate.(Ref(mod), args)...)
+translate(mod::Module, ::Val{:during}, args::Tuple{Any, Any}) =
+    During(translate.(Ref(mod), args)...)
+
+AndPrior(Y) = and_prior.(It >> DateInterval, Lift(Day, (Y,)))
+translate(mod::Module, ::Val{:and_prior}, args::Tuple{Any}) =
+    AndPrior(translate.(Ref(mod), args)...)
+
+AndSubsequent(Y) = and_subsequent.(It >> DateInterval, Lift(Day, (Y,)))
+translate(mod::Module, ::Val{:and_subsequent}, args::Tuple{Any}) =
+    AndSubsequent(translate.(Ref(mod), args)...)
 
 # Sometimes it's useful to list the concepts ancestors.
 
@@ -289,12 +312,11 @@ translate(::Module, ::Val{:days}) = Dates.Day(1)
 # Temporary sort since it's not implemented yet, it happens that
 # group provides the functionality needed though.
 
-DataKnots.Label(::Nothing) = Query(Label, nothing); 
-DataKnots.Label(::Environment, p::Pipeline, ::Nothing) = 
+DataKnots.Label(::Nothing) = Query(Label, nothing);
+DataKnots.Label(::Environment, p::Pipeline, ::Nothing) =
     relabel(p, nothing)
 
-Sort(X) = Given(:source => It, 
-                Group(X) >> It.source >> Label(nothing))
+Sort(X) = Given(:source => It, Group(X) >> It.source >> Label(nothing))
 
 translate(mod::Module, ::Val{:sort}, args::Tuple{Any}) =
     Sort(translate.(Ref(mod), args)...)

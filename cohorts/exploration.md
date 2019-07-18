@@ -64,7 +64,7 @@ particular condition.
     @query sp10 begin
         condition
         filter(concept.$IsHypertensive)
-        {person_id, concept.concept_name}
+        { person_id, concept.concept_name }
     end
     #=>
        │ condition                                   │
@@ -84,7 +84,7 @@ Let's consider specified visit types.
     @query sp10 begin
         visit
         filter(is_inpatient_or_er)
-        {person_id, concept.concept_name}
+        { person_id, concept.concept_name }
     end
     #=>
       │ visit                      │
@@ -139,7 +139,7 @@ Let's consider specified visit types.
           visit.date_interval(
             start_date,
             max(end_date, start_date + 7days)), 90days).
-        {concept, interval=>it}
+        { concept, interval=>it }
     #=>
        │ concept  interval                 │
     ───┼───────────────────────────────────┼
@@ -147,12 +147,85 @@ Let's consider specified visit types.
      2 │ 0        2008-10-20 to 2009-02-01 │
      3 │ 0        2009-05-22 to 2009-09-09 │
      4 │ 0        2010-04-15 to 2010-08-19 │
-     5 │ 9201     2008-04-09 to 2008-04-16 │
-     6 │ 9201     2009-03-30 to 2009-04-06 │
-     7 │ 9201     2009-07-20 to 2009-10-07 │
-     8 │ 9201     2010-07-22 to 2010-07-30 │
+     ⋮
      9 │ 9202     2008-09-07 to 2008-09-16 │
     10 │ 9202     2009-01-09 to 2009-01-16 │
     11 │ 9202     2009-08-02 to 2009-08-09 │
     12 │ 9202     2010-05-06 to 2010-05-13 │
     =#
+
+    @query sp10 visit{ date_interval, earlier => and_prior(3days) }
+    #=>
+       │ visit                                              │
+       │ date_interval             earlier                  │
+    ───┼────────────────────────────────────────────────────┼
+     1 │ 2008-04-09 to 2008-04-13  2008-04-06 to 2008-04-13 │
+     2 │ 2008-11-22 to 2008-11-22  2008-11-19 to 2008-11-22 │
+     3 │ 2008-04-10 to 2008-04-10  2008-04-07 to 2008-04-10 │
+     ⋮
+    27 │ 2010-06-07 to 2010-06-07  2010-06-04 to 2010-06-07 │
+    =#
+
+    @query sp10 visit{ date_interval, later => and_subsequent(3days) }
+    #=>
+       │ visit                                              │
+       │ date_interval             later                    │
+    ───┼────────────────────────────────────────────────────┼
+     1 │ 2008-04-09 to 2008-04-13  2008-04-09 to 2008-04-16 │
+     2 │ 2008-11-22 to 2008-11-22  2008-11-22 to 2008-11-25 │
+     3 │ 2008-04-10 to 2008-04-10  2008-04-10 to 2008-04-13 │
+     ⋮
+    27 │ 2010-06-07 to 2010-06-07  2010-06-07 to 2010-06-10 │
+    =#
+
+    @query sp10 condition{ earlier => start_date.and_prior(3days),
+                           later => start_date.and_subsequent(3days) }
+    #=>
+       │ condition                                          │
+       │ earlier                   later                    │
+    ───┼────────────────────────────────────────────────────┼
+     1 │ 2008-04-07 to 2008-04-10  2008-04-10 to 2008-04-13 │
+     2 │ 2009-05-19 to 2009-05-22  2009-05-22 to 2009-05-25 │
+     3 │ 2008-11-19 to 2008-11-22  2008-11-22 to 2008-11-25 │
+     4 │ 2008-11-09 to 2008-11-12  2008-11-12 to 2008-11-15 │
+     5 │ 2009-07-30 to 2009-08-02  2009-08-02 to 2009-08-05 │
+     6 │ 2010-08-09 to 2010-08-12  2010-08-12 to 2010-08-15 │
+     ⋮
+    22 │ 2008-09-04 to 2008-09-07  2008-09-07 to 2008-09-10 │
+    23 │ 2009-06-27 to 2009-06-30  2009-06-30 to 2009-07-03 │
+    24 │ 2010-06-04 to 2010-06-07  2010-06-07 to 2010-06-10 │
+    25 │ 2008-09-04 to 2008-09-07  2008-09-07 to 2008-09-10 │
+    26 │ 2009-09-27 to 2009-09-30  2009-09-30 to 2009-10-03 │
+    =#
+
+    @query sp10 visit.keep(it){it,
+                   person.condition.filter(
+                         start_date.during(visit))}
+    #=>
+       │ visit                       │
+       │ visit    condition          │
+    ───┼─────────────────────────────┼
+     1 │ 88179    228161             │
+     2 │ 88214    228060             │
+     3 │ 88246    228161             │
+     ⋮
+    25 │ 5314671  13769189; 13769190 │
+    26 │ 5314690  13769242           │
+    27 │ 5314696  13769260           │
+    =#
+
+    @query sp10 visit.keep(it){ it,
+                   person.condition.filter(
+                        start_date.during(and_prior(3days), visit)) }
+    #=>
+       │ visit              │
+       │ visit    condition │
+    ───┼────────────────────┼
+     1 │ 88179              │
+     2 │ 88214              │
+     3 │ 88246              │
+     4 │ 88263              │
+     5 │ 1454883  3767773   │
+     ⋮
+    =#
+
