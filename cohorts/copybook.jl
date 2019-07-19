@@ -114,6 +114,15 @@ const Concept =
 
 translate(::Module, ::Val{:concept}) = Concept
 
+const SourceConcept =
+    CascadeGet(:fpk_observation_concept_s,
+               :fpk_visit_concept_s, :fpk_condition_concept_s,
+               :fpk_device_concept_s, :fpk_procedure_concept_s,
+               :fpk_drug_era_concept_s, :fpk_drug_concept_s) >>
+    Label(:source_concept)
+
+translate(::Module, ::Val{:source_concept}) = SourceConcept
+
 const Person =
     CascadeGet(:person, :fpk_observation_person,
                :fpk_visit_person, :fpk_condition_person,
@@ -237,7 +246,7 @@ function collapse_intervals(intervals::Vector{DateInterval},
     intervals′
 end
 
-CollapseIntervals(I, A) = collapse_intervals.(I, A)
+CollapseIntervals(I, A) = collapse_intervals.(I >> DateInterval, A)
 CollapseIntervals(A) = DataKnots.Then(CollapseIntervals, (A,))
 
 translate(mod::Module, ::Val{:collapse_intervals},

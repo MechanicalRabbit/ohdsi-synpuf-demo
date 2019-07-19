@@ -2,6 +2,14 @@
 # assuming there is a "synpuf" database. It also is used to run
 # DataKnots queries to replicate chorts in the Book Of OHDSI.
 
+test:
+	PGHOST=/var/run/postgresql PGDATABASE=synpuf-10p \
+	  julia -e "using NarrativeTest; runtests()"
+
+test_6:
+	PGHOST=/var/run/postgresql PGDATABASE=synpuf-10p \
+	  julia -e "using NarrativeTest; runtests(\"cohorts/1770676.md\")"
+
 test_5:
 	PGHOST=/var/run/postgresql PGDATABASE=synpuf-10p \
 	  julia -e "using NarrativeTest; runtests(\"cohorts/1770675.md\")"
@@ -9,10 +17,6 @@ test_5:
 test_4:
 	PGHOST=/var/run/postgresql PGDATABASE=synpuf-10p \
 	  julia -e "using NarrativeTest; runtests(\"cohorts/1770674.md\")"
-
-test:
-	PGHOST=/var/run/postgresql PGDATABASE=synpuf-10p \
-	  julia -e "using NarrativeTest; runtests()"
 
 shell:
 	cd cohorts && PGHOST=/var/run/postgresql PGDATABASE=synpuf-10p \
