@@ -6,25 +6,6 @@ using DataKnots: Query, Environment, Pipeline, ValueOf, BlockOf,
 import DataKnots: translate, lookup, Lift, Label
 import Base: show
 
-# For the macro variants of some combinators here, we wish to permit
-# keyword arguments to be used. This macro translation does this.
-function translate_kwargs(mod, names, args)
-    unpacked = []
-    for (name, arg) in zip(names, args)
-        if Meta.isexpr(arg, :kw)
-            key = arg.args[1]
-            if key !== name
-                err = "expected argument named `$(name)`, got `$(key)`"
-                throw(ArgumentError(err))
-            end
-            push!(unpacked, arg.args[2])
-        else
-            push!(unpacked, arg)
-        end
-    end
-    return translate.(Ref(mod), unpacked)
-end
-
 # So that queries can be used inside a macro without the dollar sign,
 # let's create a macro that injects a translation. This permits
 # query macros to be created and then reused later.
@@ -55,11 +36,10 @@ function DispatchByType(env::Environment, p::Pipeline,
     error("doesn't match any type: $(syntaxof(target(p)))")
 end
 
-# This is a temporary work-around till we have better naming
-# support in the PostgreSQL adapter. Basically, we want to be able
-# to use `concept` in a query and either access the main concept
-# table in the root context, or the primary link to that table
-# from other contexts.
+# This is a work-around till we have better naming support in the
+# PostgreSQL adapter. Basically, we want to be able to use `concept` in
+# a query and either access the main concept table in the root context,
+# or the primary link to that table from other contexts.
 
 CascadeGet(names...) =
     Query(CascadeGet, names...)
@@ -200,6 +180,9 @@ lookup(ity::Type{DateInterval}, name::Symbol) =
         lift(getfield, name) |> designate(ity, Date)
     end
 
+# We define `includes` to mean that a date falls within a date interval
+# inclusively, or that one interval is completely subsumed by another.
+
 includes(period::DateInterval, val::String) =
     includes(period, Date(val))
 
@@ -210,11 +193,13 @@ includes(period::DateInterval, val::DateInterval) =
    (val.start_date >= period.start_date) &&
    (period.end_date >= val.end_date)
 
-and_prior(init::Date, len::Day) =
+# we define 
+
+and_previous(init::Date, len::Day) =
     DateInterval(init - len, init)
 and_subsequent(init::Date, len::Day) =
     DateInterval(init, init + len)
-and_prior(di::DateInterval, len::Day) =
+and_previous(di::DateInterval, len::Day) =
     DateInterval(di.start_date - len, di.end_date)
 and_subsequent(di::DateInterval, len::Day) =
     DateInterval(di.start_date, di.end_date + len)
@@ -275,9 +260,9 @@ During(Y) = includes.(Y >> DateInterval, It >> DateInterval)
 translate(mod::Module, ::Val{:during}, args::Tuple{Any}) =
     During(translate.(Ref(mod), args)...)
 
-AndPrior(Y) = and_prior.(It >> DateInterval, Lift(Day, (Y,)))
-translate(mod::Module, ::Val{:and_prior}, args::Tuple{Any}) =
-    AndPrior(translate.(Ref(mod), args)...)
+AndPrevious(Y) = and_previous.(It >> DateInterval, Lift(Day, (Y,)))
+translate(mod::Module, ::Val{:and_previous}, args::Tuple{Any}) =
+    AndPrevious(translate.(Ref(mod), args)...)
 
 AndSubsequent(Y) = and_subsequent.(It >> DateInterval, Lift(Day, (Y,)))
 translate(mod::Module, ::Val{:and_subsequent}, args::Tuple{Any}) =

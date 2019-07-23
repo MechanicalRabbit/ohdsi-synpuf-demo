@@ -154,7 +154,7 @@ Let's consider specified visit types.
     12 │ 9202     2010-05-06 to 2010-05-13 │
     =#
 
-    @query sp10 visit{ date_interval, earlier => and_prior(3days) }
+    @query sp10 visit{ date_interval, earlier => and_previous(3days) }
     #=>
        │ visit                                              │
        │ date_interval             earlier                  │
@@ -178,7 +178,7 @@ Let's consider specified visit types.
     27 │ 2010-06-07 to 2010-06-07  2010-06-07 to 2010-06-10 │
     =#
 
-    @query sp10 condition{ earlier => start_date.and_prior(3days),
+    @query sp10 condition{ earlier => start_date.and_previous(3days),
                            later => start_date.and_subsequent(3days) }
     #=>
        │ condition                                          │
