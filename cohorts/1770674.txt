@@ -1,3 +1,4 @@
+http://www.ohdsi.org/web/atlas/#/cohortdefinition/1770674
 
 [BookOfOHDSI] Acute myocardial infarction events
 Initial Event Cohort
