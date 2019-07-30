@@ -231,8 +231,9 @@ function collapse_intervals(intervals::Vector{DateInterval},
     intervals′
 end
 
-CollapseIntervals(I, A) = collapse_intervals.(I >> DateInterval, A)
-CollapseIntervals(A) = DataKnots.Then(CollapseIntervals, (A,))
+CollapseIntervals(A, I) = collapse_intervals.(I >> DateInterval, A)
+ReverseCollapse(I, A) = CollapseIntervals(A, I)
+CollapseIntervals(A) = DataKnots.Then(ReverseCollapse, (A,))
 
 translate(mod::Module, ::Val{:collapse_intervals},
           args::Tuple{Any, Any}) =
