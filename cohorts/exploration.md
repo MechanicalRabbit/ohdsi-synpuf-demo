@@ -136,9 +136,10 @@ Let's consider specified visit types.
 
     @query sp10 visit.group(concept).keep(concept).
         collapse_intervals(
+          90days,
           visit.date_interval(
             start_date,
-            max(end_date, start_date + 7days)), 90days).
+            max(end_date, start_date + 7days))).
         { concept, interval=>it }
     #=>
        │ concept  interval                 │
