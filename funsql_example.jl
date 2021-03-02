@@ -56,25 +56,32 @@ q = person |>
         Agg.Max(Get.year_of_birth))
 run(q)
 
+q = (:p_group => person |> Group()) |>
+    Select(
+        Agg.Count(over=Get.p_group),
+        Agg.Min(Get.year_of_birth, over=Get.p_group),
+        Agg.Max(Get.year_of_birth, over=Get.p_group))
+run(q)
+
 q = person |>
-    Join(:condition => (condition_occurrence |> Group(Get.person_id)),
+    Join(:condition => condition_occurrence |> Group(Get.person_id),
          Fun."="(Get.person_id, Get.condition.person_id)) |>
     Select(
         Get.person_id,
         Agg.Count(),
-        Agg.Min(Get.condition.condition_start_date),
-        Agg.Max(Get.condition.condition_start_date))
+        Agg.Min(Get.condition_start_date),
+        Agg.Max(Get.condition_start_date))
 run(q)
 
 q = person |>
-    Join(:condition => (condition_occurrence |> Group(Get.person_id)),
+    Join(:condition => condition_occurrence |> Group(Get.person_id),
          Fun."="(Get.person_id, Get.condition.person_id)) |>
     Where(Fun.">"(Agg.Count(), 2)) |>
     Select(Get.person_id, Agg.Count())
 run(q)
 
 q = person |>
-    Join(:condition => (condition_occurrence |> Group(Get.person_id)),
+    Join(:condition => condition_occurrence |> Group(Get.person_id),
          Fun."="(Get.person_id, Get.condition.person_id)) |>
     Group("# conditions" => Agg.Count()) |>
     Select(
@@ -84,17 +91,16 @@ q = person |>
 run(q)
 
 q = person |>
-    Join(:condition => (condition_occurrence |> Group(Get.person_id)),
+    Join(:condition => condition_occurrence |> Group(Get.person_id),
          Fun."="(Get.person_id, Get.condition.person_id)) |>
-    Join(:visit => (visit_occurrence |> Group(Get.person_id)),
+    Join(:visit => visit_occurrence |> Group(Get.person_id),
          Fun."="(Get.person_id, Get.visit.person_id)) |>
     Select(
         Get.person_id,
         Agg.Count(over=Get.condition),
-        Agg.Min(Get.condition.condition_start_date, over=Get.condition),
-        Agg.Max(Get.condition.condition_start_date, over=Get.condition),
+        Agg.Min(Get.condition_start_date, over=Get.condition),
+        Agg.Max(Get.condition_start_date, over=Get.condition),
         Agg.Count(over=Get.visit),
-        Agg.Min(Get.visit.visit_start_date, over=Get.visit),
-        Agg.Max(Get.visit.visit_start_date, over=Get.visit))
+        Agg.Min(Get.visit_start_date, over=Get.visit),
+        Agg.Max(Get.visit_start_date, over=Get.visit))
 run(q)
-
