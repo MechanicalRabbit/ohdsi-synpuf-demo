@@ -63,6 +63,25 @@ q = (:p_group => person |> Group()) |>
         Agg.Max(Get.year_of_birth, over=Get.p_group))
 run(q)
 
+q = concept |>
+    Join(concept_ancestor,
+         Fun."="(Get.concept_id, Get.descendant_concept_id)) |>
+    Select(Get.concept_id,
+           Get.descendant_concept_id,
+           Get.ancestor_concept_id)
+run(q)
+
+q = concept |>
+    Join(concept_ancestor,
+         Fun."="(Get.concept_id, Get.descendant_concept_id)) |>
+    Join(:ancestor => concept |> Where(Fun."="(Get.concept_id, "312327")),
+         Fun."="(Get.ancestor_concept_id, Get.ancestor.concept_id)) |>
+    Select(Get.concept_id,
+           Get.descendant_concept_id,
+           Get.ancestor_concept_id,
+           Get.ancestor.concept_id)
+run(q)
+
 q = person |>
     Join(:condition => condition_occurrence |> Group(Get.person_id),
          Fun."="(Get.person_id, Get.condition.person_id)) |>
