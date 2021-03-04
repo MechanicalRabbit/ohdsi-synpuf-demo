@@ -24,56 +24,115 @@ for tbl in cat["public"]
     @eval $(Symbol(tbl.name)) = SQLTable($tbl)
 end
 
-const myocardial_infarction = (codesystem = "SNOMED", code = "22298006")
-const old_myocardial_infarction = (codesystem = "SNOMED", code = "1755008")
+SNOMED(code) =
+    (codesystem = "SNOMED", code = code)
+
+SNOMED(codes...) =
+    [SNOMED(code) for code in codes]
+
+VISIT(code) =
+    (codesystem = "Visit", code = code)
+
+VISIT(codes...) =
+    [VISIT(code) for code in codes]
+
+const myocardial_infarction = SNOMED("22298006")
+
+const old_myocardial_infarction = SNOMED("1755008")
+
+const inpatient_or_er = VISIT("ERIP", "ER", "IP")
 
 IsCoded(t) =
-    Fun.And(Fun."="(Get.vocabulary_id, t.codesystem), Fun."="(Get.concept_code, t.code))
+    Fun.And(Fun."="(Get.vocabulary_id, t.codesystem),
+            Fun."="(Get.concept_code, t.code))
 
-IsCoded′(t) =
-    Get.vocabulary_id."="(t.codesystem)."AND"(Get.concept_code."="(t.code))
+IsCoded(ts::AbstractVector) =
+    Fun.Or((IsCoded(t) for t in ts)...)
 
-IsCoded′′(t) =
-    (Get.vocabulary_id .== t.codesystem) .& (Get.concept_id .== t.code)
-
-#=
-Fun.=(X, Y) => FunCall{:(=)}(X, Y)
-X .== Y => FunCall{==}(X, Y)
-=#
-
-# @query sp10 concept.filter(is_myocardial_infarction).
-#                  { code => concept_code, name => concept_name }
-
-FromValidConcept() =
+FromConcept() =
     From(concept) |>
     Where(Fun."IS_NULL"(Get.invalid_reason))
 
-FromValidConcept(t) =
-    FromValidConcept() |> Where(IsCoded(t))
+FromConceptOnly(t) =
+    FromConcept() |> Where(IsCoded(t))
 
-QInfarctionConcept =
-    FromValidConcept() |>
-    Where(IsCoded(myocardial_infarction)) |>
-    Select(Get.concept_id)
-run(QInfarctionConcept)
-
-QInfarctionConceptDescendants =
-    (:ancestor => FromValidConcept(myocardial_infarction)) |>
-    Join(concept_ancestor,
-         Fun."="(Get.ancestor.concept_id, Get.ancestor_concept_id)) |>
-    Join(:descendant => FromValidConcept(),
-         Fun."="(Get.descendant.concept_id, Get.descendant_concept_id)) |>
-    Select(Get.descendant.concept_id)
-run(QInfarctionConceptDescendants)
-
-QInfarctionConceptWithDescendants =
-    FromValidConcept(myocardial_infarction) |>
+FromConcept(t) =
+    FromConceptOnly(t) |>
     Append(
-        FromValidConcept() |>
+        FromConcept() |>
         Join(concept_ancestor,
              Fun."="(Get.concept_id, Get.descendant_concept_id)) |>
-        Join(:ancestor => FromValidConcept(myocardial_infarction),
-             Fun."="(Get.ancestor_concept_id, Get.ancestor.concept_id)))
-run(QInfarctionConceptWithDescendants)
+        Join(:ancestor => FromConceptOnly(t),
+             Fun."="(Get.ancestor_concept_id, Get.ancestor.concept_id))) |>
+    ((t isa AbstractVector) ? Group(Get.concept_id) : identity)
 
-run(QInfarctionConceptWithDescendants |> Select(Get.concept_id))
+FromConcept(t, et) =
+    FromConcept(t) |>
+    Join(:excluded => FromConcept(et),
+         Fun."="(Get.concept_id, Get.excluded.concept_id),
+         is_left=true) |>
+    Where(Fun."IS NULL"(Get.excluded.concept_id))
+
+QInfarctions =
+    FromConcept(myocardial_infarction,
+                old_myocardial_infarction)
+run(QInfarctions)
+
+QInpatientOrER =
+    FromConcept(inpatient_or_er)
+run(QInpatientOrER)
+
+#=
+    @define candidate_events = begin
+        condition
+        keep(index_date => start_date)
+        filter(concept.is_myocardial_infarction)
+    end
+
+    @query sp10 begin
+        candidate_events
+        { person, index_date }
+    end
+=#
+
+QInfarctionConditions =
+    From(condition_occurrence) |>
+    Join(:infarction_concept => QInfarctions,
+         Fun."="(Get.condition_concept_id, Get.infarction_concept.concept_id)) |>
+    Select(Get.person_id,
+           :index_date => Get.condition_start_date)
+run(QInfarctionConditions)
+
+QInfarctionConditionsInOP =
+    QInfarctionConditions |>
+    Join(:OP => observation_period,
+         Fun.And(Fun."="(Get.person_id, Get.OP.person_id),
+                 Fun."<="(Get.OP.observation_period_start_date, Get.index_date),
+                 Fun."<="(Get.index_date, Get.OP.observation_period_end_date)))
+run(QInfarctionConditionsInOP |>
+    Select(Get.person_id,
+           Get.OP.observation_period_start_date,
+           Get.index_date,
+           Get.OP.observation_period_end_date))
+
+QAcuteVisits =
+    From(visit_occurrence) |>
+    Join(:inpatient_or_er_concept => QInpatientOrER,
+         Fun."="(Get.visit_concept_id, Get.inpatient_or_er_concept.concept_id))
+run(QAcuteVisits)
+
+QInfarctionConditionsInOPDuringInpationOrER =
+    QInfarctionConditionsInOP |>
+    Join(:acute_visit => QAcuteVisits,
+         Fun.And(Fun."<="(Get.OP.observation_period_start_date,
+                          Get.acute_visit.visit_start_date),
+                 Fun."<="(Get.acute_visit.visit_end_date,
+                          Get.OP.observation_period_end_date),
+                 Fun."<="(Get.acute_visit.visit_start_date,
+                          Get.index_date),
+                 Fun."<="(Get.index_date,
+                          Get.acute_visit.visit_end_date)))
+run(QInfarctionConditionsInOPDuringInpationOrER)
+
+
+
