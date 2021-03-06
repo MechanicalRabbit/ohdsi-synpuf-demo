@@ -1,19 +1,22 @@
 using Revise
 using LibPQ
 using DataKnots: DataKnot
-using FunSQL: FunSQL, SQLTable, From, Select, Where, Join, Group, Append, Agg, Fun, Get, to_sql, normalize
+using FunSQL:
+    FunSQL, SQLTable, From, Select, Where, Join, Group, Window, Append, Agg,
+    Fun, Get, to_sql, normalize
 using PostgresCatalog
 
 FunSQL.SQLTable(tbl::PostgresCatalog.PGTable) =
     SQLTable(Symbol(tbl.schema.name), Symbol(tbl.name), Symbol[Symbol(col.name) for col in tbl])
 
-conn = LibPQ.Connection("postgresql:///synpuf-hcfu?host=/var/run/postgresql")
+conn = LibPQ.Connection("postgresql:///synpuf-5pct?host=/var/run/postgresql")
+#conn = LibPQ.Connection("postgresql:///synpuf-10p?host=/var/run/postgresql")
 
 function run(q)
     sql = to_sql(normalize(q))
     println(sql, ";")
     println()
-    result = execute(conn, sql)
+    @time result = execute(conn, sql)
     println(convert(DataKnot, result))
     println('-'^80)
 end
@@ -112,7 +115,8 @@ QInfarctionConditionsInOP =
 run(QInfarctionConditionsInOP |>
     Select(Get.person_id,
            Get.OP.observation_period_start_date,
-           Get.index_date,
+           :start_date => Get.index_date,
+           :end_date => Fun."+"(Get.index_date, 7),
            Get.OP.observation_period_end_date))
 
 QAcuteVisits =
@@ -121,10 +125,12 @@ QAcuteVisits =
          Fun."="(Get.visit_concept_id, Get.inpatient_or_er_concept.concept_id))
 run(QAcuteVisits)
 
-QInfarctionConditionsInOPDuringInpationOrER =
+QInfarctionConditionsInOPDuringAcuteVisit =
     QInfarctionConditionsInOP |>
     Join(:acute_visit => QAcuteVisits,
-         Fun.And(Fun."<="(Get.OP.observation_period_start_date,
+         Fun.And(Fun."="(Get.person_id,
+                         Get.acute_visit.person_id),
+                 Fun."<="(Get.OP.observation_period_start_date,
                           Get.acute_visit.visit_start_date),
                  Fun."<="(Get.acute_visit.visit_end_date,
                           Get.OP.observation_period_end_date),
@@ -132,7 +138,21 @@ QInfarctionConditionsInOPDuringInpationOrER =
                           Get.index_date),
                  Fun."<="(Get.index_date,
                           Get.acute_visit.visit_end_date)))
-run(QInfarctionConditionsInOPDuringInpationOrER)
+run(QInfarctionConditionsInOPDuringAcuteVisit)
 
+run(QInfarctionConditionsInOPDuringAcuteVisit |>
+    Group(Get.person_id) |>
+    Where(Fun.">"(Agg.Count(Get.index_date, distinct=true), 3)))
+
+run(person |>
+    Window(Get.gender_concept_id) |>
+    Select(Get.person_id, Agg.Count(), Agg.Row_Number()))
+
+QInfarctionConditionsInOPDuringAcuteVisitCollapsed =
+    QInfarctionConditionsInOPDuringAcuteVisit |>
+    Window(Get.person_id, order=[Get.index_date]) |>
+    Select(Get.person_id, Get.index_date, Agg.Row_Number()) |>
+    Where(Fun."="(Get.person_id, 42891))
+run(QInfarctionConditionsInOPDuringAcuteVisitCollapsed)
 
 
