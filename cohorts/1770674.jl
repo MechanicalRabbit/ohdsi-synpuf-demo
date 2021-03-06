@@ -2,8 +2,8 @@ using Revise
 using LibPQ
 using DataKnots: DataKnot
 using FunSQL:
-    FunSQL, SQLTable, From, Select, Where, Join, Group, Window, Append, Agg,
-    Fun, Get, to_sql, normalize
+    FunSQL, SQLTable, From, Select, Define, Where, Join, Group, Window, Append,
+    Agg, Fun, Get, to_sql, normalize
 using PostgresCatalog
 
 FunSQL.SQLTable(tbl::PostgresCatalog.PGTable) =
@@ -148,11 +148,37 @@ run(person |>
     Window(Get.gender_concept_id) |>
     Select(Get.person_id, Agg.Count(), Agg.Row_Number()))
 
+const selected_person_id = 42891
+
+QInfarctionConditionsInOPDuringAcuteVisitCollapsedExplanation =
+    QInfarctionConditionsInOPDuringAcuteVisit |>
+    Where(Fun."="(Get.person_id, selected_person_id)) |>
+    Window(Get.person_id, order=[Get.index_date]) |>
+    Define(:boundary => Fun."+"(Agg.Lag(Get.index_date), 180)) |>
+    Define(:bump => Fun.Case(Fun."<="(Get.index_date, Get.boundary), 0, 1)) |>
+    Select(Get.person_id, Get.index_date, Get.boundary, Get.bump)
+run(QInfarctionConditionsInOPDuringAcuteVisitCollapsedExplanation)
+
+QInfarctionConditionsInOPDuringAcuteVisitCollapsedExplanation2 =
+    QInfarctionConditionsInOPDuringAcuteVisit |>
+    Where(Fun."="(Get.person_id, selected_person_id)) |>
+    Window(Get.person_id, order=[Get.index_date]) |>
+    Define(:boundary => Fun."+"(Agg.Lag(Get.index_date), 180)) |>
+    Define(:bump => Fun.Case(Fun."<="(Get.index_date, Get.boundary), 0, 1)) |>
+    Window(Get.person_id, order=[Get.index_date]) |>
+    Define(:group => Agg.Sum(Get.bump)) |>
+    Select(Get.person_id, Get.index_date, Get.boundary, Get.bump, Get.group)
+run(QInfarctionConditionsInOPDuringAcuteVisitCollapsedExplanation2)
+
 QInfarctionConditionsInOPDuringAcuteVisitCollapsed =
     QInfarctionConditionsInOPDuringAcuteVisit |>
     Window(Get.person_id, order=[Get.index_date]) |>
-    Select(Get.person_id, Get.index_date, Agg.Row_Number()) |>
-    Where(Fun."="(Get.person_id, 42891))
+    Define(:boundary => Fun."+"(Agg.Lag(Get.index_date), 180)) |>
+    Define(:bump => Fun.Case(Fun."<="(Get.index_date, Get.boundary), 0, 1)) |>
+    Window(Get.person_id, order=[Get.index_date]) |>
+    Define(:group => Agg.Sum(Get.bump)) |>
+    Group(Get.person_id, Get.group) |>
+    Select(Get.person_id, Agg.Min(Get.index_date), Agg.Max(Get.index_date))
 run(QInfarctionConditionsInOPDuringAcuteVisitCollapsed)
 
 
