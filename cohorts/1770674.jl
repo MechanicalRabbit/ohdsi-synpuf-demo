@@ -2,8 +2,8 @@ using Revise
 using LibPQ
 using DataKnots: DataKnot
 using FunSQL:
-    FunSQL, SQLTable, From, Select, Define, Where, Join, Group, Window, Append,
-    Agg, Fun, Get, to_sql, normalize
+    FunSQL, SQLTable, From, Select, Define, Where, Join, Group, Order, Limit,
+    Window, Distinct, Append, As, Bind, Agg, Fun, Get, to_sql, normalize
 using PostgresCatalog
 
 FunSQL.SQLTable(tbl::PostgresCatalog.PGTable) =
@@ -67,7 +67,7 @@ FromConcept(t) =
              Fun."="(Get.concept_id, Get.descendant_concept_id)) |>
         Join(:ancestor => FromConceptOnly(t),
              Fun."="(Get.ancestor_concept_id, Get.ancestor.concept_id))) |>
-    ((t isa AbstractVector) ? Group(Get.concept_id) : identity)
+    ((t isa AbstractVector) ? Distinct(Get.concept_id) : identity)
 
 FromConcept(t, et) =
     FromConcept(t) |>
@@ -102,9 +102,8 @@ QInfarctionConditions =
     From(condition_occurrence) |>
     Join(:infarction_concept => QInfarctions,
          Fun."="(Get.condition_concept_id, Get.infarction_concept.concept_id)) |>
-    Select(Get.person_id,
-           :index_date => Get.condition_start_date)
-run(QInfarctionConditions)
+    Define(:index_date => Get.condition_start_date)
+run(QInfarctionConditions |> Select(Get.person_id, Get.index_date))
 
 QInfarctionConditionsInOP =
     QInfarctionConditions |>
@@ -138,6 +137,33 @@ QInfarctionConditionsInOPDuringAcuteVisit =
                           Get.index_date),
                  Fun."<="(Get.index_date,
                           Get.acute_visit.visit_end_date)))
+run(QInfarctionConditionsInOPDuringAcuteVisit)
+
+QCorrelatedAcuteVisit(person_id, index_date, op_start_date, op_end_date) =
+    QAcuteVisits |>
+    As(:acute_visit) |>
+    Where(Fun.And(Fun."="(Get.person_id, Get.acute_visit.person_id),
+                  Fun."<="(Get.op_start_date,
+                           Get.acute_visit.visit_start_date),
+                  Fun."<="(Get.acute_visit.visit_end_date,
+                           Get.op_end_date),
+                  Fun."<="(Get.acute_visit.visit_start_date,
+                           Get.index_date),
+                  Fun."<="(Get.index_date,
+                           Get.acute_visit.visit_end_date))) |>
+    Bind(:person_id => person_id,
+         :index_date => index_date,
+         :op_start_date => op_start_date,
+         :op_end_date => op_end_date)
+
+QInfarctionConditionsInOPDuringAcuteVisit =
+    QInfarctionConditionsInOP |>
+    Where(
+        Fun.Exists(
+            QCorrelatedAcuteVisit(Get.person_id,
+                                  Get.index_date,
+                                  Get.OP.observation_period_start_date,
+                                  Get.OP.observation_period_end_date)))
 run(QInfarctionConditionsInOPDuringAcuteVisit)
 
 run(QInfarctionConditionsInOPDuringAcuteVisit |>
